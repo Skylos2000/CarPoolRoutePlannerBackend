@@ -18,6 +18,7 @@ repositories {
     mavenCentral()
 }
 
+val exposedVersion: String by project
 dependencies {
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-auth:$ktor_version")
@@ -31,4 +32,9 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
 
     implementation("io.ktor:ktor-server-sessions:$ktor_version")
+
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("mysql:mysql-connector-java:5.1.48")
 }
