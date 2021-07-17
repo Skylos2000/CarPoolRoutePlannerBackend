@@ -25,3 +25,5 @@ bin/
 .DS_Store
 
 hs_err_pid*.log
+
+src/main/resources/secrets.conf
