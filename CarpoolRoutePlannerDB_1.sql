@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Group1` (
   `group_leader` INT NULL,
   `Route_id` INT NULL,
   PRIMARY KEY (`Group_ID`),
-  INDEX `group_leader_idx` (`group_leader` ASC) VISIBLE,
-  INDEX `Route_id_idx` (`Route_id` ASC) VISIBLE,
+  INDEX `group_leader_idx` (`group_leader` ASC),
+  INDEX `Route_id_idx` (`Route_id` ASC),
   CONSTRAINT `group_leader`
     FOREIGN KEY (`group_leader`)
     REFERENCES `mydb`.`User1` (`UID`)
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Group_Membership` (
   `user_lat` DOUBLE NULL,
   `user_long` DOUBLE NULL,
   PRIMARY KEY (`Gid`, `Uid`),
-  INDEX `Uid_idx` (`Uid` ASC) VISIBLE,
+  INDEX `Uid_idx` (`Uid` ASC),
   CONSTRAINT `Uid`
     FOREIGN KEY (`Uid`)
     REFERENCES `mydb`.`User1` (`UID`)
