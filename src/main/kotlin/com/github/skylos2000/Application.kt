@@ -10,10 +10,11 @@ import io.ktor.server.netty.*
 fun main(args: Array<String>) = EngineMain.main(args)
 
 fun Application.module(testing: Boolean = false) {
+    val db = initDb()
+
     configureRouting()
-    configureSecurity()
+    configureSecurity(db)
     configureSerialization()
 
-    val db = initDb()
     initRoutes(db)
 }

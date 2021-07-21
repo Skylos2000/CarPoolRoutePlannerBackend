@@ -1,6 +1,6 @@
 package com.github.skylos2000
 
-import com.github.skylos2000.plugins.getUsername
+import com.github.skylos2000.plugins.getLoggedInUser
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.locations.*
@@ -15,14 +15,17 @@ data class ExampleLocation(val groupId: Int)
 fun Application.initRoutes(db: Database) {
     routing {
         authenticate("auth-basic") {
-            get("/example/") {
-                call.respondText("Hello, ${call.getUsername()}")
+            get("/example/what_is_my_name/") {
+                call.respondText(call.getLoggedInUser()?.username ?: "no one")
             }
 
-            get("/example/json") {
-                call.respond(/* Any serializable object can be placed here */ mapOf(
-                    "a" to 1,
-                    "b" to 2
+            get("/example/my_pickup_coords") {
+                val loggedInUser = call.getLoggedInUser() ?: return@get
+
+                // Any serializable object can be placed here
+                call.respond(Pair(
+                    loggedInUser.defaultPickupLatitude,
+                    loggedInUser.defaultPickupLongitude
                 ))
             }
 
