@@ -5,9 +5,11 @@ import com.github.skylos2000.plugins.getLoggedInUser
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.locations.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -58,6 +60,22 @@ fun Application.initRoutes(db: Database) {
 
                 call.respond(rowUser.copy(password = ""))
             }
+        }
+
+        post("/signup") {
+            val params = call.receiveParameters()
+
+            // fixme: Currently the uid is not being auto incremented so this is not working
+            //  Once that is done this should work
+            transaction(db) {
+                User1.insert {
+                    it[Username] = params["username"]!!
+                    it[Password] = params["password"]!!
+                    it[Email] = params["email"]!!
+                }
+            }
+
+            call.respondText("Added user ${params["username"]} to db")
         }
     }
 }
