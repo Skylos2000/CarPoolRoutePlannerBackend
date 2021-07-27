@@ -65,8 +65,6 @@ fun Application.initRoutes(db: Database) {
         post("/signup") {
             val params = call.receiveParameters()
 
-            // fixme: Currently the uid is not being auto incremented so this is not working
-            //  Once that is done this should work
             transaction(db) {
                 User1.insert {
                     it[Username] = params["username"]!!
