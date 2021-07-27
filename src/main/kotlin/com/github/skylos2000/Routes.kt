@@ -4,6 +4,7 @@ import com.github.skylos2000.db.*
 import com.github.skylos2000.plugins.getLoggedInUser
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -22,10 +23,6 @@ data class GetGroupMembersLocation(val groupId: Int)
 @KtorExperimentalLocationsAPI
 @Location("/get_user_info/{userId}")
 data class GetUserInfoLocation(val userId: Int)
-
-@KtorExperimentalLocationsAPI
-@Location("/get_user_groups/{userId}")
-data class GetUserGroups(val userId: Int)
 
 @KtorExperimentalLocationsAPI
 fun Application.initRoutes(db: Database) {
@@ -66,11 +63,15 @@ fun Application.initRoutes(db: Database) {
                 call.respond(rowUser.copy(password = ""))
             }
 
-            get<GetUserGroups> {
+            get("/list_my_groups/") {
                 val me = call.getLoggedInUser()!!
-                if (me.id == it.userId) {
-                    //call.respond()
-                }
+                call.respond(
+                    transaction(db) {
+                        Group_Membership
+                            .select { Group_Membership.Uid eq me.id }
+                            .map { row -> row[Group_Membership.Gid] }
+                    }
+                )
             }
 
             post("/set_my_pickup_location") {
