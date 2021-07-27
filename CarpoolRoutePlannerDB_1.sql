@@ -18,7 +18,7 @@ USE `mydb` ;
 -- Table `mydb`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`User1` (
-  `UID` INT NOT NULL,
+  `UID` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(45) NULL,
   `username` VARCHAR(45) NULL,
   `password` VARCHAR(45) NULL,
@@ -32,7 +32,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`Routes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Routes` (
-  `Rid` INT NOT NULL,
+  `Rid` INT NOT NULL AUTO_INCREMENT,
   `Destination_lat` DOUBLE NULL,
   `Destination_long` DOUBLE NULL,
   `Order1` VARCHAR(45) NULL,
@@ -44,7 +44,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`Group1`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Group1` (
-  `Group_ID` INT NOT NULL,
+  `Group_ID` INT NOT NULL AUTO_INCREMENT,
   `isTemp` TINYINT NULL,
   `group_leader` INT NULL,
   `Route_id` INT NULL,
@@ -68,7 +68,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`Group_Membership`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Group_Membership` (
-  `Gid` INT NOT NULL,
+  `Gid` INT NOT NULL AUTO_INCREMENT,
   `Uid` INT NOT NULL,
   `user_lat` DOUBLE NULL,
   `user_long` DOUBLE NULL,
@@ -91,7 +91,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`Group_Destinations`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Group_Destinations` (
-  `Group_id` INT NOT NULL,
+  `Group_id` INT NOT NULL AUTO_INCREMENT,
   `Destination_lat` DOUBLE NULL,
   `Destination_long` DOUBLE NULL,
   `label` VARCHAR(90) NULL,
