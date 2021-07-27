@@ -12,6 +12,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 // http://ipaddress/example/123
 @KtorExperimentalLocationsAPI
@@ -21,6 +22,10 @@ data class GetGroupMembersLocation(val groupId: Int)
 @KtorExperimentalLocationsAPI
 @Location("/get_user_info/{userId}")
 data class GetUserInfoLocation(val userId: Int)
+
+@KtorExperimentalLocationsAPI
+@Location("/get_user_groups/{userId}")
+data class GetUserGroups(val userId: Int)
 
 @KtorExperimentalLocationsAPI
 fun Application.initRoutes(db: Database) {
@@ -54,11 +59,30 @@ fun Application.initRoutes(db: Database) {
             get<GetUserInfoLocation> {
                 val rowUser = getUserFromResultRow(
                     transaction(db) {
-                        User1.select { User1.Uid eq it.userId }.first()
+                        User1.select { User1.Uid eq it.userId }.single()
                     }
                 )
 
                 call.respond(rowUser.copy(password = ""))
+            }
+
+            get<GetUserGroups> {
+                val me = call.getLoggedInUser()!!
+                if (me.id == it.userId) {
+                    //call.respond()
+                }
+            }
+
+            post("/set_my_pickup_location") {
+                val params = call.receiveParameters()
+                val me = call.getLoggedInUser()!!
+
+                transaction(db) {
+                    User1.update({ User1.Uid eq me.id }) {
+                        it[Default_Pickup_Lat] = params["newDefaultLatitude"]!!.toDouble()
+                        it[Default_Pickup_Long] = params["newDefaultLongitude"]!!.toDouble()
+                    }
+                }
             }
         }
 
