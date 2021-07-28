@@ -74,7 +74,24 @@ fun Application.initRoutes(db: Database) {
                 )
             }
 
+            post("/set_my_pickup_location_by_text") {
+                val me = call.getLoggedInUser()!!
+                // Should be in form: <double lat>,<double long>
+                val params = call.receiveText()
+
+                val lat = params.substringBefore(',').toDouble()
+                val long = params.substringAfter(',').toDouble()
+
+                transaction(db) {
+                    User1.update({ User1.Uid eq me.id }) {
+                        it[Default_Pickup_Lat] = lat
+                        it[Default_Pickup_Long] = long
+                    }
+                }
+            }
+
             post("/set_my_pickup_location") {
+                // TODO: Figure out how to use this on the frontend
                 val params = call.receiveParameters()
                 val me = call.getLoggedInUser()!!
 
