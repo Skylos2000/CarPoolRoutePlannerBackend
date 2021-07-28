@@ -4,16 +4,12 @@ import com.github.skylos2000.db.*
 import com.github.skylos2000.plugins.getLoggedInUser
 import io.ktor.application.*
 import io.ktor.auth.*
-import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 // http://ipaddress/example/123
 @KtorExperimentalLocationsAPI
@@ -27,6 +23,10 @@ data class GetUserInfoLocation(val userId: Int)
 @KtorExperimentalLocationsAPI
 @Location("/get_group_routes/{groupId}")
 data class GetUserPickups(val groupId: Int)
+
+@KtorExperimentalLocationsAPI
+@Location("/set_group_destination/{groupId}")
+data class SetGroupDestinationLocation(val groupId: Int, val newLat: Double, val newLong: Double)
 
 @KtorExperimentalLocationsAPI
 fun Application.initRoutes(db: Database) {
@@ -91,6 +91,17 @@ fun Application.initRoutes(db: Database) {
 
                     (userDestinations + groupDestinations).joinToString("|") { "${it.first},${it.second}" }
                 })
+            }
+
+            get<SetGroupDestinationLocation> { pathParams ->
+                transaction(db) {
+                    Group_Destinations.deleteWhere { Group_Destinations.Group_id eq pathParams.groupId }
+                    Group_Destinations.insert {
+                        it[Group_id] = pathParams.groupId
+                        it[Destination_Lat] = pathParams.newLat
+                        it[Destination_Long] = pathParams.newLong
+                    }
+                }
             }
 
             post("/set_my_pickup_location_by_text") {

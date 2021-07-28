@@ -91,7 +91,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`Group_Destinations`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Group_Destinations` (
-  `Group_id` INT NOT NULL AUTO_INCREMENT,
+  `Group_id` INT NOT NULL AUTO_INCREMENT, -- TODO: This shouldn't auto increment
   `Destination_lat` DOUBLE NULL,
   `Destination_long` DOUBLE NULL,
   `label` VARCHAR(90) NULL,
@@ -123,11 +123,11 @@ END$$
 DELIMITER ;
 
 insert into User1(Uid, email, Username, password, Default_pickup_lat, Default_pickup_long) values
-(001, "qwe.gmail.com", "qqq", "www", 100.00, 120.00),
-(002, "asd.gmail.com", "aaa", "eee",  100.00, 120.00),
-(003, "zxc.gmail.com", "zzz", "rrr",  100.00, 120.00),
-(004, "try.gmail.com", "ttt", "ttt", 100.00, 120.00),
-(005, "fgh.gmail.com", "fff", "yyy", 100.00, 120.00);
+(001, 'qwe.gmail.com', 'qqq', 'www', 100.00, 120.00),
+(002, 'asd.gmail.com', 'aaa', 'eee',  100.00, 120.00),
+(003, 'zxc.gmail.com', 'zzz', 'rrr',  100.00, 120.00),
+(004, 'try.gmail.com', 'ttt', 'ttt', 100.00, 120.00),
+(005, 'fgh.gmail.com', 'fff', 'yyy', 100.00, 120.00);
 
 insert into Routes(Rid, Destination_lat, Destination_long, Order1) values
 (1, 50.00, 50.00, 1);
@@ -145,7 +145,7 @@ insert into Group_Membership(Gid, Uid, User_lat, User_long) values
 (789, 003, 100.00, 120.00);
 
 insert into Group_Destinations(Group_id, Destination_lat, Destination_long, label) values
-(123, 50.00, 50.00, "delete me");
+(123, 50.00, 50.00, 'delete me');
 
 select * from User1;
 select * from Group1;
