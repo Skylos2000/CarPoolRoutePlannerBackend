@@ -8,8 +8,8 @@ data class RowUser(
     val email: String,
     val username: String,
     val password: String, // TODO: Figure out secure password storage
-    val defaultPickupLatitude: Double,
-    val defaultPickupLongitude: Double,
+    val defaultPickupLatitude: Double?,
+    val defaultPickupLongitude: Double?,
 )
 
 // Route itself will be a list of these
