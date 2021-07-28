@@ -102,6 +102,8 @@ fun Application.initRoutes(db: Database) {
                         it[Destination_Long] = pathParams.newLong
                     }
                 }
+
+                call.respondText("Success")
             }
 
             post("/set_my_pickup_location_by_text") {
