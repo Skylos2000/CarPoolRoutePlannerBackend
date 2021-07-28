@@ -145,6 +145,20 @@ fun Application.initRoutes(db: Database) {
             }
         }
 
+        post("/signup_text/") {
+            val (username, password, email) = call.receiveText().split(",")
+
+            transaction(db) {
+                User1.insert {
+                    it[Username] = username
+                    it[Password] = password
+                    it[Email] = email
+                }
+            }
+
+            call.respondText("Added user $username to db")
+        }
+
         post("/signup") {
             val params = call.receiveParameters()
 
