@@ -121,6 +121,17 @@ fun Application.initRoutes(db: Database) {
                     }
                 }
             }
+
+            post("/create_group/") {
+                val me = call.getLoggedInUser()!!
+
+                transaction(db) {
+                    Group1.insert {
+                        it[isTemp] = false
+                        it[group_leader] = me.id
+                    }
+                }
+            }
         }
 
         post("/signup") {
