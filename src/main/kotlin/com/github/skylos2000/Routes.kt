@@ -120,19 +120,22 @@ fun Application.initRoutes(db: Database) {
                         it[Default_Pickup_Long] = long
                     }
                 }
+                call.respondText("Success")
             }
 
             post("/set_my_pickup_location") {
                 // TODO: Figure out how to use this on the frontend
-                val params = call.receiveParameters()
+                //val params = call.receiveParameters()
+                val params = call.receiveText()
                 val me = call.getLoggedInUser()!!
-
-                transaction(db) {
+                println("Posting is possible")
+                println(params)
+                /*transaction(db) {
                     User1.update({ User1.Uid eq me.id }) {
                         it[Default_Pickup_Lat] = params["newDefaultLatitude"]!!.toDouble()
                         it[Default_Pickup_Long] = params["newDefaultLongitude"]!!.toDouble()
                     }
-                }
+                }*/
             }
 
             post("/create_group/") {
@@ -145,6 +148,7 @@ fun Application.initRoutes(db: Database) {
                     }
                 }
             }
+
         }
 
         post("/signup_text/") {
