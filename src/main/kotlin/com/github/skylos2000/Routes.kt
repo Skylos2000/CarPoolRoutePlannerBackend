@@ -25,6 +25,10 @@ data class GetGroupMembersLocation(val groupId: Int)
 data class GetUserInfoLocation(val userId: Int)
 
 @KtorExperimentalLocationsAPI
+@Location("/get_group_routes/{groupId}")
+data class GetUserPickups(val groupId: Int)
+
+@KtorExperimentalLocationsAPI
 fun Application.initRoutes(db: Database) {
     routing {
         authenticate("auth-basic") {
@@ -72,6 +76,21 @@ fun Application.initRoutes(db: Database) {
                             .map { row -> row[Group_Membership.Gid] }
                     }
                 )
+            }
+
+            get<GetUserPickups> {
+                call.respondText(transaction(db) {
+                    val userDestinations = Group_Membership
+                        .select { Group_Membership.Gid eq it.groupId }
+                        .map {
+                            Pair(it[Group_Membership.User_Lat], it[Group_Membership.User_Long])
+                        }
+
+                    val groupDestinations = Group_Destinations.select { Group_Destinations.Group_id eq it.groupId}
+                        .map { Pair(it[Group_Destinations.Destination_Lat], it[Group_Destinations.Destination_Long]) }
+
+                    (userDestinations + groupDestinations).joinToString("|") { "${it.first},${it.second}" }
+                })
             }
 
             post("/set_my_pickup_location_by_text") {
