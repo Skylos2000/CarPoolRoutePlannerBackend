@@ -149,6 +149,21 @@ fun Application.initRoutes(db: Database) {
                 }
             }
 
+            post("/submit_location") {
+                val (group_id, lat, long, priority, label) = call.receiveText().split(",")
+
+                transaction(db) {
+                    Group_Destinations.insert {
+                        it[Group_id] = group_id.toInt()
+                        it[Destination_Lat] = lat.toDouble()
+                        it[Destination_Long] = long.toDouble()
+                        it[isPriority] = priority.toBoolean()
+                        it[Label] = label
+                    }
+                }
+                call.respondText("Success")
+            }
+
         }
 
         post("/signup_text/") {

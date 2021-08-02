@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Group_Destinations` (
   `Group_id` INT NOT NULL AUTO_INCREMENT, -- TODO: This shouldn't auto increment
   `Destination_lat` DOUBLE NULL,
   `Destination_long` DOUBLE NULL,
+  `isPriority` BOOLEAN,
   `label` VARCHAR(90) NULL,
   PRIMARY KEY (`Group_id`),
   CONSTRAINT `Group_id`

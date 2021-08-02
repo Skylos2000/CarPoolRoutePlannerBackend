@@ -45,6 +45,7 @@ object  Group_Destinations : Table() {
     val Group_id = reference("Group_id", Group1.Group_ID).uniqueIndex()
     val Destination_Lat: Column<Double> = double("Destination_Lat")
     val Destination_Long: Column<Double> = double("Destination_Long")
+    val isPriority: Column<Boolean> = bool("isPriority")
     val Label: Column<String> = varchar("Label", 45)
 
     override val primaryKey = PrimaryKey(Group_id, Destination_Lat, Destination_Long)
