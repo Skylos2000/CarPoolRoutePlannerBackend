@@ -68,7 +68,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`Group_Membership`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Group_Membership` (
-  `Gid` INT NOT NULL AUTO_INCREMENT,
+  `Gid` INT NOT NULL,
   `Uid` INT NOT NULL,
   `user_lat` DOUBLE NULL,
   `user_long` DOUBLE NULL,
@@ -91,12 +91,11 @@ ENGINE = InnoDB;
 -- Table `mydb`.`Group_Destinations`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Group_Destinations` (
-  `Group_id` INT NOT NULL AUTO_INCREMENT, -- TODO: This shouldn't auto increment
+  `Group_id` INT NOT NULL,
   `Destination_lat` DOUBLE NULL,
   `Destination_long` DOUBLE NULL,
   `isPriority` BOOLEAN,
   `label` VARCHAR(90) NULL,
-  PRIMARY KEY (`Group_id`),
   CONSTRAINT `Group_id`
     FOREIGN KEY (`Group_id`)
     REFERENCES `mydb`.`Group1` (`Group_ID`)
