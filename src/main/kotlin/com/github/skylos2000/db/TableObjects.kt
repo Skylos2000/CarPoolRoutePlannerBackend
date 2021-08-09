@@ -1,5 +1,6 @@
 package com.github.skylos2000.db
 
+import com.github.skylos2000.db.Group_Membership.uniqueIndex
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
@@ -49,4 +50,15 @@ object  Group_Destinations : Table() {
     val Label: Column<String> = varchar("Label", 45)
 
     override val primaryKey = PrimaryKey(Group_id, Destination_Lat, Destination_Long)
+}
+
+object GroupInvites: Table() {
+    val id : Column<Int> = integer("id").autoIncrement()
+    val Gid = reference("Gid", Group1.Group_ID).uniqueIndex()
+    val InviteId : Column<String> = varchar("Invite_Id",15)
+
+    override val primaryKey = PrimaryKey(
+       id
+    )
+
 }

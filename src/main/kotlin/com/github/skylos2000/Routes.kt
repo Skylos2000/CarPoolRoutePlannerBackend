@@ -40,10 +40,12 @@ fun Application.initRoutes(db: Database) {
                 val loggedInUser = call.getLoggedInUser() ?: return@get
 
                 // Any serializable object can be placed here
-                call.respond(Pair(
-                    loggedInUser.defaultPickupLatitude,
-                    loggedInUser.defaultPickupLongitude
-                ))
+                call.respond(
+                    Pair(
+                        loggedInUser.defaultPickupLatitude,
+                        loggedInUser.defaultPickupLongitude
+                    )
+                )
             }
 
             get<GetGroupMembersLocation> {
@@ -86,7 +88,7 @@ fun Application.initRoutes(db: Database) {
                             Pair(it[Group_Membership.User_Lat], it[Group_Membership.User_Long])
                         }
 
-                    val groupDestinations = Group_Destinations.select { Group_Destinations.Group_id eq it.groupId}
+                    val groupDestinations = Group_Destinations.select { Group_Destinations.Group_id eq it.groupId }
                         .map { Pair(it[Group_Destinations.Destination_Lat], it[Group_Destinations.Destination_Long]) }
 
                     (userDestinations + groupDestinations).joinToString("|") { "${it.first},${it.second}" }
@@ -192,6 +194,28 @@ fun Application.initRoutes(db: Database) {
             }
 
             call.respondText("Added user ${params["username"]} to db")
+        }
+
+        post("/create_invite/") {
+            val params = call.receiveParameters()
+            val gid = params["gid"]
+            val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+            val randomString = (1..8)
+                .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                .map(charPool::get)
+                .joinToString("");
+            if (gid == null) {
+                call.respondText("Error: No Gid Mentioned")
+            } else {
+                transaction(db) {
+                    GroupInvites.insert {
+                        it[Gid] = gid.toInt()
+                        it[InviteId] = randomString
+                    }
+                }
+                val respond = application.locations.href("/invite/$randomString")
+                call.respondText(respond)
+            }
         }
     }
 }
