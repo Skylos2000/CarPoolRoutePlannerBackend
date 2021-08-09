@@ -103,6 +103,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Group_Destinations` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS `mydb`.`GroupInvites` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `Gid` INT NOT NULL,
+    `InviteId` VARCHAR(15) NOT NULL,
+    CONSTRAINT `Gid`
+        FOREIGN KEY (`Gid`)
+        REFERENCES `mydb`.Group1 (`Group_ID`)
+)
+ENGINE = InnoDB;
+
 USE `mydb`;
 
 DELIMITER $$
