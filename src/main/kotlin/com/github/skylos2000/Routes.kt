@@ -164,6 +164,14 @@ fun Application.initRoutes(db: Database) {
                 call.respondText("Success")
             }
 
+            post("/delete_group"){
+                val group_id = call.receiveText().toInt()
+
+                transaction(db) {
+                    Group1.deleteWhere { Group1.Group_ID eq group_id }
+                }
+                call.respondText { "Success" }
+            }
         }
 
         post("/signup_text/") {

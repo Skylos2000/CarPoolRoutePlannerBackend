@@ -33,6 +33,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
 
     implementation("io.ktor:ktor-server-sessions:$ktor_version")
+    implementation("io.ktor:ktor-websockets:$ktor_version")
 
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
