@@ -26,7 +26,7 @@ data class GetUserPickups(val groupId: Int)
 
 @KtorExperimentalLocationsAPI
 @Location("/set_group_destination/{groupId}")
-data class SetGroupDestinationLocation(val groupId: Int, val newLat: Double, val newLong: Double)
+data class SetGroupDestinationLocation(val groupId: Int, val newLat: Double, val newLong: Double, val label: String)
 
 @KtorExperimentalLocationsAPI
 fun Application.initRoutes(db: Database) {
@@ -105,6 +105,7 @@ fun Application.initRoutes(db: Database) {
                         it[Group_id] = pathParams.groupId
                         it[Destination_Lat] = pathParams.newLat
                         it[Destination_Long] = pathParams.newLong
+                        it[Label] = pathParams.label
                     }
                 }
 
@@ -136,7 +137,8 @@ fun Application.initRoutes(db: Database) {
                 println("Posting is possible")
                 println(params)
                 /*transaction(db) {
-                    User1.update({ User1.Uid eq me.id }) {
+                    val
+                            update = User1.update({ User1.Uid eq me.id }) {
                         it[Default_Pickup_Lat] = params["newDefaultLatitude"]!!.toDouble()
                         it[Default_Pickup_Long] = params["newDefaultLongitude"]!!.toDouble()
                     }
@@ -177,6 +179,37 @@ fun Application.initRoutes(db: Database) {
                 }
                 call.respondText { "Success" }
             }
+            
+            get("/join_group/{inviteCode}") {
+            val inviteCode = call.parameters["inviteCode"]
+			var message = "EMPTY"
+			val me = call.getLoggedInUser()!!
+			
+            transaction(db){
+                val gid = GroupInvites.select{GroupInvites.InviteId eq inviteCode.toString()}.map{
+                    it[GroupInvites.Gid]
+                }
+                if(gid.count() > 0) 
+                {
+					message = (gid[0].toString())
+					val mid  =  Group_Membership.select{(Group_Membership.Gid eq gid[0]) and (Group_Membership.Uid eq me.id)}.map {
+					it[Group_Membership.Uid]
+					}
+					
+					if(mid.count()==0) {
+					Group_Membership.insert{
+						it[Gid] = gid[0]
+						it[Uid] = me.id
+						it[User_Lat] = 0.0
+						it[User_Long] = 0.0
+					}
+					}
+                }
+            }
+            
+            call.respondText(message)
+        }
+        
         }
 
         post("/signup_text/") {
