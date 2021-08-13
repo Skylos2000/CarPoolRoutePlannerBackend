@@ -26,7 +26,7 @@ data class GetUserPickups(val groupId: Int)
 
 @KtorExperimentalLocationsAPI
 @Location("/set_group_destination/{groupId}")
-data class SetGroupDestinationLocation(val groupId: Int, val newLat: Double, val newLong: Double)
+data class SetGroupDestinationLocation(val groupId: Int, val newLat: Double, val newLong: Double, val label: String)
 
 @KtorExperimentalLocationsAPI
 fun Application.initRoutes(db: Database) {
@@ -102,6 +102,7 @@ fun Application.initRoutes(db: Database) {
                         it[Group_id] = pathParams.groupId
                         it[Destination_Lat] = pathParams.newLat
                         it[Destination_Long] = pathParams.newLong
+                        it[Label] = pathParams.label
                     }
                 }
 
@@ -133,7 +134,8 @@ fun Application.initRoutes(db: Database) {
                 println("Posting is possible")
                 println(params)
                 /*transaction(db) {
-                    User1.update({ User1.Uid eq me.id }) {
+                    val
+                            update = User1.update({ User1.Uid eq me.id }) {
                         it[Default_Pickup_Lat] = params["newDefaultLatitude"]!!.toDouble()
                         it[Default_Pickup_Long] = params["newDefaultLongitude"]!!.toDouble()
                     }
