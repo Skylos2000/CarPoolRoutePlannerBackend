@@ -85,7 +85,7 @@ fun Application.initRoutes(db: Database) {
             }
 
             get<GetUserPickups> {
-                call.respondText(transaction(db) {
+                call.respond(transaction(db) {
                     val userDestinations = Group_Membership
                         .select { Group_Membership.Gid eq it.groupId }
                         .map {
@@ -95,7 +95,8 @@ fun Application.initRoutes(db: Database) {
                     val groupDestinations = Group_Destinations.select { Group_Destinations.Group_id eq it.groupId }
                         .map { Pair(it[Group_Destinations.Destination_Lat], it[Group_Destinations.Destination_Long]) }
 
-                    (userDestinations + groupDestinations).joinToString("|") { "${it.first},${it.second}" }
+                    // (userDestinations + groupDestinations).joinToString("|") { "${it.first},${it.second}" }
+                    groupDestinations
                 })
             }
 
