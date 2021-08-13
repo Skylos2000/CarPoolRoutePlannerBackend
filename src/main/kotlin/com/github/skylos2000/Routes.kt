@@ -40,11 +40,14 @@ fun Application.initRoutes(db: Database) {
                 val loggedInUser = call.getLoggedInUser() ?: return@get
 
                 // Any serializable object can be placed here
-                call.respond(
-                    Pair(
+                call.respondText(
+                    loggedInUser.defaultPickupLatitude.toString() + ", " +
+                            loggedInUser.defaultPickupLongitude.toString()
+
+                    /*Pair(
                         loggedInUser.defaultPickupLatitude,
                         loggedInUser.defaultPickupLongitude
-                    )
+                    )*/
                 )
             }
 
