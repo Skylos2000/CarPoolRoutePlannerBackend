@@ -190,6 +190,18 @@ fun Application.initRoutes(db: Database) {
                 call.respondText("Success")
             }
 
+            post("/remove_location"){
+                val (group_id, lat, long) = call.receiveText().split(",")
+
+                transaction(db){
+                    Group_Destinations.deleteWhere {
+                        (Group_Destinations.Group_id eq group_id.toInt()) and
+                                (Group_Destinations.Destination_Lat eq lat.toDouble()) and
+                                (Group_Destinations.Destination_Long eq long.toDouble())
+                    }
+                }
+            }
+
             post("/delete_group"){
                 val group_id = call.receiveText().toInt()
 
