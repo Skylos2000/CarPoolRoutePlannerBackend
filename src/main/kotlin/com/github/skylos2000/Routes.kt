@@ -153,8 +153,26 @@ fun Application.initRoutes(db: Database) {
                         it[isTemp] = false
                         it[group_leader] = me.id
                     }
+                    //val group = insertStatment.resultedValues!!.first()
+//                    /*Group1.select{ Group1.Group_ID }.andWhere { Group1.group_leader eq me.id }
+//                    Group1.max()
+//                    Group1.max(Group_ID)*/
+
+                    //val largestGid = Group1.select { Group1.Group_ID.max }
+                    //val groupNum1 = Group1.select { Group1.Group_ID eq largestGid }.first()[Group1.Group_ID]
+                    val groupNum1 = Group1.select{Group1.group_leader eq me.id}.toList()
+                    //val dumbass = groupNum1.max()
+
+                    Group_Membership.insert {
+                        it[Gid] = groupNum1.last()[Group1.Group_ID]
+                        it[Uid] = me.id
+                        it[User_Lat] = me.defaultPickupLatitude
+                        it[User_Long] = me.defaultPickupLongitude
+                    }
                 }
             }
+
+
 
             post("/submit_location") {
                 val (group_id, lat, long, priority, label) = call.receiveText().split(",")
