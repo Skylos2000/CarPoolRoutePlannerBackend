@@ -9,6 +9,7 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 // http://ipaddress/example/123
@@ -199,34 +200,34 @@ fun Application.initRoutes(db: Database) {
             }
             
             get("/join_group/{inviteCode}") {
-            val inviteCode = call.parameters["inviteCode"]
-			var message = "EMPTY"
-			val me = call.getLoggedInUser()!!
-			
-            transaction(db){
-                val gid = GroupInvites.select{GroupInvites.InviteId eq inviteCode.toString()}.map{
-                    it[GroupInvites.Gid]
+                val inviteCode = call.parameters["inviteCode"]
+                var message = "EMPTY"
+                val me = call.getLoggedInUser()!!
+
+                transaction(db){
+                    val gid = GroupInvites.select{GroupInvites.InviteId eq inviteCode.toString()}.map{
+                        it[GroupInvites.Gid]
+                    }
+                    if(gid.count() > 0)
+                    {
+                        message = (gid[0].toString())
+                        val mid  =  Group_Membership.select{(Group_Membership.Gid eq gid[0]) and (Group_Membership.Uid eq me.id)}.map {
+                        it[Group_Membership.Uid]
+                        }
+
+                        if(mid.count()==0) {
+                        Group_Membership.insert{
+                            it[Gid] = gid[0]
+                            it[Uid] = me.id
+                            it[User_Lat] = 0.0
+                            it[User_Long] = 0.0
+                        }
+                        }
+                    }
                 }
-                if(gid.count() > 0) 
-                {
-					message = (gid[0].toString())
-					val mid  =  Group_Membership.select{(Group_Membership.Gid eq gid[0]) and (Group_Membership.Uid eq me.id)}.map {
-					it[Group_Membership.Uid]
-					}
-					
-					if(mid.count()==0) {
-					Group_Membership.insert{
-						it[Gid] = gid[0]
-						it[Uid] = me.id
-						it[User_Lat] = 0.0
-						it[User_Long] = 0.0
-					}
-					}
-                }
+
+                call.respondText(message)
             }
-            
-            call.respondText(message)
-        }
         
         }
 
