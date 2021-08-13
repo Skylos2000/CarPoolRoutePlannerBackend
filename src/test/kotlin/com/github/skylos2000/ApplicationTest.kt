@@ -110,4 +110,57 @@ class ApplicationTest {
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
         }
     }
+
+    @Test
+    fun testGetGroupMembersLocation() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/get_group_members/456", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("[2,4]", response.content)
+            }
+            //call.respondText(call.getLoggedInUser()?.username ?: "no one")
+        }
+    }
+
+    @Test
+    fun testSetGroupDestinationLocation() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/set_group_destination/456?=newLat=0&newLong=0&label=a", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("[2,4]", response.content)
+            }
+            /*
+            Group_Destinations.deleteWhere { Group_Destinations.Group_id eq pathParams.groupId }
+                    Group_Destinations.insert {
+                        it[Group_id] = pathParams.groupId
+                        it[Destination_Lat] = pathParams.newLat
+                        it[Destination_Long] = pathParams.newLong
+                        it[Label] = pathParams.label
+                    }
+             */
+        }
+    }
+
+    @Test
+    fun testSubmitLocation() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/submit_location", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("[2,4]", response.content)
+            }
+            //call.respondText(call.getLoggedInUser()?.username ?: "no one")
+        }
+    }
+
+    @Test
+    fun testCreateGroup() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/set_my_pickup_location", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("[2,4]", response.content)
+            }
+            //call.respondText(call.getLoggedInUser()?.username ?: "no one")
+        }
+    }
+
 }
