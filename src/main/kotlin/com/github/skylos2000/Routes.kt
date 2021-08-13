@@ -149,7 +149,7 @@ fun Application.initRoutes(db: Database) {
                 val me = call.getLoggedInUser()!!
 
                 transaction(db) {
-                    Group1.insert {
+                    val insertStatment = Group1.insert {
                         it[isTemp] = false
                         it[group_leader] = me.id
                     }

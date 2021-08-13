@@ -36,8 +36,8 @@ object Group1 : Table(){
 object  Group_Membership : Table() {
     val Gid = reference("Gid", Group1.Group_ID).uniqueIndex()
     val Uid = reference("Uid", User1.Uid).uniqueIndex()
-    val User_Lat: Column<Double> = double("User_Lat")
-    val User_Long: Column<Double> = double("User_Long")
+    val User_Lat: Column<Double?> = double("User_Lat").nullable()
+    val User_Long: Column<Double?> = double("User_Long").nullable()
 
     override val primaryKey = PrimaryKey(Gid, Uid)
 }
