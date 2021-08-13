@@ -122,6 +122,20 @@ BEGIN
 DELETE FROM Group_Membership WHERE Uid = old.UID;
 END$$
 
+DELIMITER $$
+USE `mydb`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `mydb`.`Group_AFTER_INSERT` AFTER INSERT ON `Group1` FOR EACH ROW
+BEGIN
+
+declare lat double;
+declare long1 double;
+
+Select lat = Default_pickup_lat from User1 where UID =  new.group_leader;
+Select long1 = Default_pickup_long from User1 where UID =  new.group_leader;
+Insert into Group_Membership(Gid, Uid, user_lat, user_long) value
+    (new.Group_ID, new.group_leader, lat, long1);
+END$$
+
 USE `mydb`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `mydb`.`Group_BEFORE_DELETE` BEFORE DELETE ON `Group1` FOR EACH ROW
 BEGIN

@@ -1,7 +1,8 @@
 package com.github.skylos2000
 
 
-import io.ktor.routing.*
+import com.github.skylos2000.db.User1
+import com.github.skylos2000.db.getUserFromResultRow
 import io.ktor.http.*
 import io.ktor.util.*
 import io.ktor.server.testing.*
@@ -43,6 +44,70 @@ class ApplicationTest {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals("Hello World!", response.content)
             }
+        }
+    }
+
+    @Test
+    fun testUserLogIn() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/example/what_is_my_name/", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("aaa", response.content)
+            }
+            //call.respondText(call.getLoggedInUser()?.username ?: "no one")
+        }
+    }
+
+    @Test
+    fun testUserPickup() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/example/my_pickup_coords", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("41.84955, -106.05794", response.content)
+            }
+            //call.respondText( loggedInUser.defaultPickupLatitude.toString() + ", " +
+            //                  loggedInUser.defaultPickupLongitude.toString() )
+        }
+    }
+
+    @Test
+    fun testUserInfo() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/get_user_info/2", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                val userRow = getUserFromResultRow(
+                    transaction() {
+                        User1.select { User1.Uid eq 2 }.single()
+                    })
+
+                val userRowJson = Json.encodeToString(userRow.copy(password = ""))
+
+                assertEquals(userRowJson, response.content)
+            }
+            //call.respondText( loggedInUser.defaultPickupLatitude.toString() + ", " +
+            //                  loggedInUser.defaultPickupLongitude.toString() )
+        }
+    }
+
+
+    @Test
+    fun testListMyGroups() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/list_my_groups/", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("456", response.content)
+            }
+        }
+    }
+
+    @Test
+    fun testGetGroupRoutes() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/get_group_routes/789", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("100.0,120.0", response.content)
+            }
+            //call.respondText(call.getLoggedInUser()?.username ?: "no one")
         }
     }
 }

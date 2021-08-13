@@ -27,11 +27,11 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         get("/") {
-            val rr = transaction(db) {
+            /*val rr = transaction(db) {
                 User1.selectAll().toList()
             }
-            //println(rr[0][User1.Email])
-            call.respondText(rr[0][User1.Email])
+            call.respondText(rr[0][User1.Email])*/
+            call.respondText("Hello World!")
         }
     }
 }
