@@ -63,7 +63,7 @@ class ApplicationTest {
         withApplication(testEnv) {
             handleRequestWithBasic("/example/my_pickup_coords", user, pass).apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("41.84955, -106.05794", response.content)
+                assertEquals("100.0, 120.0", response.content)
             }
             //call.respondText( loggedInUser.defaultPickupLatitude.toString() + ", " +
             //                  loggedInUser.defaultPickupLongitude.toString() )
@@ -95,7 +95,7 @@ class ApplicationTest {
         withApplication(testEnv) {
             handleRequestWithBasic("/list_my_groups/", user, pass).apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("456", response.content)
+                assertEquals("[456]", response.content)
             }
         }
     }
