@@ -9,7 +9,6 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 // http://ipaddress/example/123
@@ -241,7 +240,58 @@ fun Application.initRoutes(db: Database) {
 
                 call.respondText(message)
             }
-        
+
+            post("/startVote"){
+                val gid = call.receiveText()
+
+                transaction(db){
+                    Group1.update({Group1.Group_ID eq gid.toInt()}){
+                        it[isVoting] = true
+                    }
+                }
+
+                call.respondText("Vote started")
+            }
+
+            post("/addVotingLocation"){
+                val (gid, dest) = call.receiveText().split(",")
+
+                transaction(db){
+                    Polls.insert{
+                        it[Group_id] = gid.toInt()
+                        it[Location] = dest
+                        it[Votes] = 0
+                    }
+                }
+
+                call.respondText("Voting location added")
+            }
+
+            post("/castVote"){
+                val (gid, dest) = call.receiveText().split(",")
+
+                transaction(db){
+                    var currVotes = Polls.select { (Polls.Group_id eq gid.toInt()) and (Polls.Location eq dest) }.map { it[Polls.Votes] }
+                    println(currVotes)
+
+                    Polls.update({(Polls.Group_id eq gid.toInt()) and (Polls.Location eq dest)}){
+                        it[Votes] = currVotes[0]+1
+
+                    }
+                }
+
+                call.respondText("Vote has been cast")
+            }
+
+            post("/voteResult"){
+                val gid = call.receiveText()
+
+                var w: String
+                transaction(db){
+                    val winner = Polls.select { Polls.Group_id eq gid.toInt() }.sortedByDescending { it[Polls.Votes] }.map { it[Polls.Location] }
+                    println(winner[0])
+                }
+            }
         }
 
         post("/signup_text/") {

@@ -26,7 +26,7 @@ fun Application.initDb(): Database {
     )
 
     transaction(db) {
-        SchemaUtils.create(User1, Routes, Group1, Group_Membership, Group_Destinations, GroupInvites)
+        SchemaUtils.create(User1, Routes, Group1, Group_Membership, Group_Destinations, GroupInvites, Polls)
     }
 
     return db

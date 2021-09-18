@@ -46,6 +46,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`Group1` (
   `Group_ID` INT NOT NULL AUTO_INCREMENT,
   `isTemp` TINYINT NULL,
+  `isVoting` TINYINT NULL,
   `group_leader` INT NULL,
   `Route_id` INT NULL,
   PRIMARY KEY (`Group_ID`),
@@ -156,10 +157,10 @@ insert into User1(Uid, email, Username, password, Default_pickup_lat, Default_pi
 insert into Routes(Rid, Destination_lat, Destination_long, Order1) values
 (1, 50.00, 50.00, 1);
 
-insert into Group1(Group_ID, isTemp, group_leader, Route_id) values 
-(123, false, 001, 1),
-(456, false, 002, 1),
-(789, false, 003, 1);
+insert into Group1(Group_ID, isTemp, isVoting, group_leader, Route_id) values
+(123, false, false, 001, 1),
+(456, false, false, 002, 1),
+(789, false, false, 003, 1);
 
 insert into Group_Membership(Gid, Uid, User_lat, User_long) values
 (123, 001, 100.00, 120.00),

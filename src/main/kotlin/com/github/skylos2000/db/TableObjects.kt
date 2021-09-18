@@ -1,8 +1,10 @@
 package com.github.skylos2000.db
 
+import com.github.skylos2000.db.Group_Destinations.uniqueIndex
 import com.github.skylos2000.db.Group_Membership.uniqueIndex
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
+import javax.xml.stream.Location
 
 object User1 : Table() {
     val Uid: Column<Int> = integer("Uid").autoIncrement()
@@ -27,6 +29,7 @@ object Routes : Table(){
 object Group1 : Table(){
     val Group_ID: Column<Int> = integer("Group_ID")
     val isTemp: Column<Boolean> = bool("isTemp")
+    val isVoting: Column<Boolean> = bool("isVoting")
     val group_leader = integer("group_leader").uniqueIndex().references(User1.Uid)
     val Route_id = integer("Route_id").uniqueIndex().references(Routes.Rid)
 
@@ -61,4 +64,13 @@ object GroupInvites: Table() {
        id
     )
 
+}
+
+object Polls : Table() {
+    val Poll_id: Column<Int> = integer("Poll_id").autoIncrement()
+    val Group_id = reference("Group_id", Group1.Group_ID)
+    val Location: Column<String> = varchar("Location", 45)
+    val Votes: Column<Int> = integer("Votes")
+
+    override val primaryKey = PrimaryKey(Poll_id)
 }
