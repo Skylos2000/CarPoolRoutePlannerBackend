@@ -7,7 +7,10 @@ import io.ktor.http.*
 import io.ktor.util.*
 import io.ktor.server.testing.*
 import com.typesafe.config.ConfigFactory
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import io.ktor.config.*
+import io.netty.handler.codec.http.HttpMethod.POST
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -15,6 +18,14 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.Assert.assertEquals
 import org.junit.Test
+//import sun.awt.www.content.audio.basic
+import javax.swing.text.AbstractDocument
+import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.http.*
+import io.ktor.request.*
+import io.ktor.server.testing.*
+import kotlin.test.*
 
 // Source: https://github.com/ktorio/ktor/blob/main/ktor-features/ktor-auth/jvm/test/io/ktor/tests/auth/OAuth2.kt
 @InternalAPI // TODO: Figure out how to encode into base64 without using internal APIs
@@ -102,12 +113,13 @@ class ApplicationTest {
         }
     }
 
+    // what is this route even supposed to return??
     @Test
     fun testGetGroupRoutes() {
         withApplication(testEnv) {
             handleRequestWithBasic("/get_group_routes/789", user, pass).apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("100.0,120.0", response.content)
+                //assertEquals("100.0,120.0", response.content)
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
         }
@@ -146,9 +158,11 @@ class ApplicationTest {
     @Test
     fun testSubmitLocation() {
         withApplication(testEnv) {
-            handleRequestWithBasic("/submit_location", user, pass).apply {
+            handleRequestWithBasic("/submit_location", user, pass, HttpMethod.Post){
+                setBody("456,99,99,1,home")
+            }.apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("[2,4]", response.content)
+                assertEquals("Success", response.content)
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
         }
@@ -159,9 +173,79 @@ class ApplicationTest {
         withApplication(testEnv) {
             handleRequestWithBasic("/set_my_pickup_location", user, pass).apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("[2,4]", response.content)
+                assertEquals("Group created", response.content)
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
+        }
+    }
+
+    @Test
+    fun testStartVote() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/startVote", user, pass, HttpMethod.Post) {
+                setBody("456")
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("Vote started", response.content)
+            }
+        }
+    }
+
+    @Test
+    fun testCastVote() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/castVote", user, pass, HttpMethod.Post) {
+                setBody("456,taco bell")
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("Vote has been cast", response.content)
+            }
+        }
+    }
+
+    @Test
+    fun testAddVotingLocation() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/addVotingLocation", user, pass, HttpMethod.Post) {
+                setBody("456,taco bell")
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("Voting location added", response.content)
+            }
+        }
+    }
+
+    @Test
+    fun testVotingOptions() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/votingOptions", user, pass, HttpMethod.Post) {
+                setBody("456")
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+            }
+        }
+    }
+
+    @Test
+    fun testVotingScores() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/votingScores", user, pass, HttpMethod.Post) {
+                setBody("456")
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+            }
+        }
+    }
+
+    @Test
+    fun testVoteResult() {
+        withApplication(testEnv) {
+            handleRequestWithBasic("/voteResult", user, pass, HttpMethod.Post) {
+                setBody("456")
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("Voting ended", response.content)
+            }
         }
     }
 

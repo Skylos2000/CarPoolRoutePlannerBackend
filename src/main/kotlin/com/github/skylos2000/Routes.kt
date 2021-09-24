@@ -171,6 +171,7 @@ fun Application.initRoutes(db: Database) {
                         it[User_Long] = me.defaultPickupLongitude
                     }
                 }
+                call.respondText("Group created")
             }
 
 
