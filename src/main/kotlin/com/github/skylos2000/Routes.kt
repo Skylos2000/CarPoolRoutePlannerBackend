@@ -412,7 +412,7 @@ fun Application.initRoutes(db: Database) {
             val params = call.receiveParameters()
             val gid = params["gid"]
             val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-            val randomString = (1..8)
+            var randomString = (1..8)
                 .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
                 .map(charPool::get)
                 .joinToString("");
@@ -420,14 +420,22 @@ fun Application.initRoutes(db: Database) {
                 call.respondText("Error: No Gid Mentioned")
             } else {
                 transaction(db) {
-                    GroupInvites.insert {
-                        it[Gid] = gid.toInt()
-                        it[InviteId] = randomString
+                     val inviteCodes = GroupInvites.select{GroupInvites.Gid eq gid.toInt()}.map{
+                        it[GroupInvites.InviteId]
+                    }
+                    if(inviteCodes.count() > 0){
+                        randomString = inviteCodes[0]
+                    }else {
+                        GroupInvites.insert {
+                            it[Gid] = gid.toInt()
+                            it[InviteId] = randomString
+                        }
                     }
                 }
-                val respond = application.locations.href("/invite/$randomString")
+                val respond = randomString
                 call.respondText(respond)
             }
         }
     }
 }
+
