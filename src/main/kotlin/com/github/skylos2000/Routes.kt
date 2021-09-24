@@ -152,6 +152,7 @@ fun Application.initRoutes(db: Database) {
                 transaction(db) {
                     val insertStatment = Group1.insert {
                         it[isTemp] = false
+                        it[isVoting] = false
                         it[group_leader] = me.id
                     }
                     //val group = insertStatment.resultedValues!!.first()
