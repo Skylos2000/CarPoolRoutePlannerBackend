@@ -18,11 +18,15 @@ import org.junit.Test
 
 // Source: https://github.com/ktorio/ktor/blob/main/ktor-features/ktor-auth/jvm/test/io/ktor/tests/auth/OAuth2.kt
 @InternalAPI // TODO: Figure out how to encode into base64 without using internal APIs
-private fun TestApplicationEngine.handleRequestWithBasic(url: String, user: String, pass: String, method: HttpMethod = HttpMethod.Get) =
+private fun TestApplicationEngine.handleRequestWithBasic(url: String, user: String, pass: String,
+                                                         method: HttpMethod = HttpMethod.Get,
+                                                         handler: (TestApplicationRequest.() -> Unit) = {}) =
     handleRequest(method, url) {
         val up = "$user:$pass"
         val encoded = up.toByteArray(Charsets.ISO_8859_1).encodeBase64()
         addHeader(HttpHeaders.Authorization, "Basic $encoded")
+
+        this.handler()
     }
 
 
