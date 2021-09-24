@@ -56,14 +56,14 @@ class ApplicationTest {
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
         }
-    }
+    } //postman
 
     @Test
     fun testUserPickup() {
         withApplication(testEnv) {
             handleRequestWithBasic("/example/my_pickup_coords", user, pass).apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("100.0, 120.0", response.content)
+                assertEquals("32.525578, -92.6444764", response.content)
             }
             //call.respondText( loggedInUser.defaultPickupLatitude.toString() + ", " +
             //                  loggedInUser.defaultPickupLongitude.toString() )
@@ -116,7 +116,7 @@ class ApplicationTest {
         withApplication(testEnv) {
             handleRequestWithBasic("/get_group_members/456", user, pass).apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("[2,4]", response.content)
+                assertEquals("[2]", response.content)
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
         }

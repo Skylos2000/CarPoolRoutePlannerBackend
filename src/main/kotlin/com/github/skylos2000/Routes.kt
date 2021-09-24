@@ -231,8 +231,8 @@ fun Application.initRoutes(db: Database) {
                         Group_Membership.insert{
                             it[Gid] = gid[0]
                             it[Uid] = me.id
-                            it[User_Lat] = 0.0
-                            it[User_Long] = 0.0
+                            it[User_Lat] = me.defaultPickupLatitude
+                            it[User_Long] = me.defaultPickupLongitude
                         }
                         }
                     }
