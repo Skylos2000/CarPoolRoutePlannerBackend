@@ -3,14 +3,20 @@ package com.github.skylos2000.plugins
 import com.github.skylos2000.db.*
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.util.pipeline.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.lang.UnsupportedOperationException
 
 data class UserPrincipal(val user: RowUser) : Principal
 
 // Return a RowUser representing the user or null if the user is not authenticated.
 fun ApplicationCall.getLoggedInUser() = principal<UserPrincipal>()?.user
+
+// TODO: This should probably use a different exception type
+val PipelineContext<Unit, ApplicationCall>.me
+    get() = call.principal<UserPrincipal>()?.user ?: throw UnsupportedOperationException("User is not logged in")
 
 fun Application.configureSecurity(db: Database) {
     install(Authentication) {

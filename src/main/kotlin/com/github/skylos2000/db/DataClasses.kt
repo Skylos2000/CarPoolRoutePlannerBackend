@@ -22,10 +22,12 @@ data class RowDestination(val label: String, val longitude: Double, val latitude
 @Serializable
 data class Group(
     val id: Int,
+    val label: String,
     val isTemp: Boolean,
-    val leader: RowUser,
-    val route: List<RowRouteStopPoint>,
-    val members: List<RowUser>,
-    val destinations: List<RowDestination>
+    val leader: Int,
+    // TODO: Reimplement these
+    // val route: List<RowRouteStopPoint>,
+    // val members: List<Int>,
+    // val destinations: List<RowDestination>
 )
 
