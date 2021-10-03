@@ -106,9 +106,10 @@ ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`GroupInvites` (
     `id` INT NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (`id`),
     `Gid` INT NOT NULL,
     `InviteId` VARCHAR(15) NOT NULL,
-    CONSTRAINT `Gid`
+    CONSTRAINT `Invite_Gid`
         FOREIGN KEY (`Gid`)
         REFERENCES `mydb`.Group1 (`Group_ID`)
 )
@@ -123,20 +124,22 @@ BEGIN
 DELETE FROM Group_Membership WHERE Uid = old.UID;
 END$$
 
-DELIMITER $$
-USE `mydb`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `mydb`.`Group_AFTER_INSERT` AFTER INSERT ON `Group1` FOR EACH ROW
-BEGIN
+-- Commented out due to error. Do we even need the default pickup locations?
 
-declare lat double;
-declare long1 double;
-
-Select lat = Default_pickup_lat from User1 where UID =  new.group_leader;
-Select long1 = Default_pickup_long from User1 where UID =  new.group_leader;
-Insert into Group_Membership(Gid, Uid, user_lat, user_long) value
-    (new.Group_ID, new.group_leader, lat, long1);
-END$$
-
+-- DELIMITER $$
+-- USE `mydb`$$
+-- CREATE DEFINER = CURRENT_USER TRIGGER `mydb`.`Group_AFTER_INSERT` AFTER INSERT ON `Group1` FOR EACH ROW
+-- BEGIN
+--
+-- declare lat double;
+-- declare long1 double;
+--
+-- Select lat = Default_pickup_lat from User1 where UID =  new.group_leader;
+-- Select long1 = Default_pickup_long from User1 where UID =  new.group_leader;
+-- Insert into Group_Membership(Gid, Uid, user_lat, user_long) value
+--     (new.Group_ID, new.group_leader, lat, long1);
+-- END$$
+--
 USE `mydb`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `mydb`.`Group_BEFORE_DELETE` BEFORE DELETE ON `Group1` FOR EACH ROW
 BEGIN
