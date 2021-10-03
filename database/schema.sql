@@ -8,6 +8,8 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- Schema mydb
 -- -----------------------------------------------------
 
+DROP DATABASE IF EXISTS mydb;
+
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
@@ -49,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Group1` (
   `isVoting` TINYINT NULL,
   `group_leader` INT NULL,
   `Route_id` INT NULL,
+  `label` VARCHAR(64) NOT NULL DEFAULT '',
   PRIMARY KEY (`Group_ID`),
   INDEX `group_leader_idx` (`group_leader` ASC),
   INDEX `Route_id_idx` (`Route_id` ASC),
@@ -174,16 +177,6 @@ insert into Group_Membership(Gid, Uid, User_lat, User_long) values
 
 insert into Group_Destinations(Group_id, Destination_lat, Destination_long, label) values
 (123, 50.00, 50.00, 'delete me');
-
-select * from User1;
-select * from Group1;
-select * from Routes;
-select * from Group_Membership;
-select * from Group_Destinations;
-
-DELETE FROM Group1 WHERE Group_ID = 123;
-DELETE FROM User1 WHERE UID = 5;
-DELETE FROM User1 WHERE UID = 1;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
