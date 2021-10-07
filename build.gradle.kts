@@ -43,4 +43,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("mysql:mysql-connector-java:5.1.48")
+
+    implementation("io.ktor:ktor-auth:$ktor_version")
+    implementation("io.ktor:ktor-auth-jwt:$ktor_version")
 }

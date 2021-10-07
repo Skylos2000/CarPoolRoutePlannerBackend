@@ -1,6 +1,7 @@
 package com.github.skylos2000
 
 import com.github.skylos2000.db.*
+import com.github.skylos2000.plugins.User
 import com.github.skylos2000.plugins.getLoggedInUser
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -8,6 +9,7 @@ import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -31,7 +33,8 @@ data class SetGroupDestinationLocation(val groupId: Int, val newLat: Double, val
 @KtorExperimentalLocationsAPI
 fun Application.initRoutes(db: Database) {
     routing {
-        authenticate("auth-basic") {
+        //authenticate("auth-basic") {
+        authenticate("auth-jwt") {
             get("/example/what_is_my_name/") {
                 call.respondText(call.getLoggedInUser()?.username ?: "no one")
             }
@@ -74,6 +77,7 @@ fun Application.initRoutes(db: Database) {
 
             get("/list_my_groups/") {
                 val me = call.getLoggedInUser()!!
+                print(me)
                 call.respond(
                     transaction(db) {
                         Group_Membership
@@ -148,6 +152,7 @@ fun Application.initRoutes(db: Database) {
 
             post("/create_group/") {
                 val me = call.getLoggedInUser()!!
+                val params = call.receiveText()
 
                 transaction(db) {
                     val insertStatment = Group1.insert {
