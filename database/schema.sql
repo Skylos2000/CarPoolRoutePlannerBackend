@@ -22,7 +22,7 @@ USE `mydb` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`User1` (
   `UID` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(45) NULL,
-  `username` VARCHAR(45) NULL,
+  `username` VARCHAR(45) NULL UNIQUE,
   `password` VARCHAR(45) NULL,
   `Default_pickup_lat` DOUBLE NULL,
   `Default_pickup_long` DOUBLE NULL,

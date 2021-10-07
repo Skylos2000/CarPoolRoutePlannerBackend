@@ -28,3 +28,4 @@ hs_err_pid*.log
 
 src/main/resources/secrets.conf
 .idea/runConfigurations/
+.idea/.name
