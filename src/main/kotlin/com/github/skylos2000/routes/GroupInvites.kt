@@ -25,7 +25,7 @@ fun getRandomString(
 
 fun Application.initGroupInviteRoutes(db: Database) {
     routing {
-        authenticate("auth-basic") {
+        authenticate("auth-jwt") {
             route("/groups/invites") {
                 // Get/create an invite
                 // If an invite already exists for the given group that same invite is used

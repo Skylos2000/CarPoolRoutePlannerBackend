@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.update
 
 fun Application.initMiscRoutes(db: Database) {
     routing {
-        authenticate("auth-basic") {
+        authenticate("auth-jwt") {
             post("/set_my_pickup_location_by_text") {
                 val me = call.getLoggedInUser()!!
                 // Should be in form: <double lat>,<double long>

@@ -20,7 +20,7 @@ data class NewUser(val username: String, val password: String, val email: String
 
 fun Application.initUserRoutes(db: Database) {
     routing {
-        authenticate("auth-basic") {
+        authenticate("auth-jwt") {
             // Get user info
             get("/users/me") {
                 val groupIds = transaction(db) {

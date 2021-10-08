@@ -16,7 +16,7 @@ import io.ktor.locations.post as locationsPost
 @KtorExperimentalLocationsAPI
 fun Application.initGroupRoutes(db: Database) {
     routing {
-        authenticate("auth-basic") {
+        authenticate("auth-jwt") {
             // Create group
             @KtorExperimentalLocationsAPI
             @Location("/groups/create")

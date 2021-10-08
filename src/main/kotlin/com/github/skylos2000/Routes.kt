@@ -23,7 +23,7 @@ data class GetUserPickups(val groupId: Int)
 @KtorExperimentalLocationsAPI
 fun Application.initRoutes(db: Database) {
     routing {
-        authenticate("auth-basic") {
+        authenticate("auth-jwt") {
             get<GetGroupMembersLocation> {
                 // Get members of given group
                 call.respond(transaction(db) {

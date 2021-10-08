@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.initVotingRoutes(db: Database) {
     routing {
-        authenticate("auth-basic") {
+        authenticate("auth-jwt") {
             post("/startVote") {
                 val gid = call.receiveText()
                 val uid = call.getLoggedInUser()?.id
