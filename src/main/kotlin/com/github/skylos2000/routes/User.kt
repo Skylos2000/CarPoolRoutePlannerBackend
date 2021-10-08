@@ -1,7 +1,6 @@
 package com.github.skylos2000.routes
 
 import com.github.skylos2000.db.Group_Membership
-import com.github.skylos2000.db.RowUser
 import com.github.skylos2000.db.User1
 import com.github.skylos2000.plugins.me
 import io.ktor.application.*
@@ -10,10 +9,12 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 // TODO: Move this to dedicated file
+@Serializable
 data class User(val userId: Int, val email: String, val username: String, val groupIds: List<Int>)
 
 data class NewUser(val username: String, val password: String, val email: String)
@@ -42,17 +43,6 @@ fun Application.initUserRoutes(db: Database) {
             }
 
             // Change password
-
-            // Get group list
-            get("/users/me/groups") {
-                val groupList = transaction(db) {
-                    Group_Membership
-                        .select { Group_Membership.Uid eq me.id }
-                        .map { row -> row[Group_Membership.Gid] }
-                }
-
-                call.respond(groupList)
-            }
         }
 
         // Sign up

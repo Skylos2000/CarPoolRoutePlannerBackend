@@ -22,7 +22,7 @@ USE `mydb` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`User1` (
   `UID` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(45) NULL,
-  `username` VARCHAR(45) NULL,
+  `username` VARCHAR(45) NULL UNIQUE,
   `password` VARCHAR(45) NULL,
   `Default_pickup_lat` DOUBLE NULL,
   `Default_pickup_long` DOUBLE NULL,
@@ -154,26 +154,41 @@ END$$
 DELIMITER ;
 
 insert into User1(Uid, email, Username, password, Default_pickup_lat, Default_pickup_long) values
-(001, 'qwe.gmail.com', 'qqq', 'www', 100.00, 120.00),
-(002, 'asd.gmail.com', 'aaa', 'eee',  100.00, 120.00),
-(003, 'zxc.gmail.com', 'zzz', 'rrr',  100.00, 120.00),
-(004, 'try.gmail.com', 'ttt', 'ttt', 100.00, 120.00),
-(005, 'fgh.gmail.com', 'fff', 'yyy', 100.00, 120.00);
+(001, 'qwe.gmail.com', 'dev1', '1', 100.00, 120.00),
+(002, 'asd.gmail.com', 'admin', 'password',  100.00, 120.00),
+(003, 'zxc.gmail.com', 'dev2', '2',  100.00, 120.00),
+(004, 'try.gmail.com', 'dev3', '3', 100.00, 120.00),
+(005, 'fgh.gmail.com', 'dev4', '4', 100.00, 120.00),
+(006, 'vbn.gmail.com', 'dev5', '5', 100.00, 120.00),
+(007, 'uio.gmail.com', 'dev6', '6',  100.00, 120.00),
+(008, 'jkl.gmail.com', 'dev7', '7',  100.00, 120.00),
+(009, 'ewq.gmail.com', 'dev8', '8', 100.00, 120.00),
+(010, 'dsa.gmail.com', 'dev9', '9', 100.00, 120.00);
 
 insert into Routes(Rid, Destination_lat, Destination_long, Order1) values
-(1, 50.00, 50.00, 1);
+(1, 50.00, 50.00, 1),
+(2, 50.00, 50.00, 1),
+(3, 50.00, 50.00, 1);
+
 
 insert into Group1(Group_ID, isTemp, isVoting, group_leader, Route_id) values
 (123, false, false, 001, 1),
 (456, false, false, 002, 1),
-(789, false, false, 003, 1);
+(789, false, false, 003, 2),
+(111, false, false, 004, 2),
+(222, false, false, 005, 3);
 
 insert into Group_Membership(Gid, Uid, User_lat, User_long) values
 (123, 001, 100.00, 120.00),
-(123, 005, 100.00, 120.00),
+(123, 005, 101.00, 121.00),
 (456, 002, 100.00, 120.00),
-(456, 004, 100.00, 120.00),
-(789, 003, 100.00, 120.00);
+(456, 004, 101.00, 121.00),
+(789, 003, 100.00, 120.00),
+(789, 006, 101.00, 121.00),
+(111, 007, 100.00, 120.00),
+(111, 008, 101.00, 121.00),
+(222, 009, 100.00, 120.00),
+(222, 010, 101.00, 121.00);
 
 insert into Group_Destinations(Group_id, Destination_lat, Destination_long, label) values
 (123, 50.00, 50.00, 'delete me');
