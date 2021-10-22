@@ -99,12 +99,9 @@ class ApplicationTest {
     @Test
     fun testUserLogIn() {
         withApplication(testEnv) {
-            var response = ""
-            runBlocking {
-                    response = loginClient.get<String>(url + "users/me")
-            }.apply {
-                //assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("{\"userId\":1,\"email\":\"qwe.gmail.com\",\"username\":\"dev1\",\"groupIds\":[123]}", response)
+            handleRequestWithBasic("/users/me", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("{\"userId\":1,\"email\":\"qwe.gmail.com\",\"username\":\"dev1\",\"groupIds\":[123]}", response.content)
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
         }
@@ -115,11 +112,8 @@ class ApplicationTest {
     @Test
     fun testGetGroupRoutes() {
         withApplication(testEnv) {
-            var response = ""
-            runBlocking {
-                response = loginClient.get(url + "get_group_routes/789")
-            }.apply {
-                assertEquals(HttpStatusCode.OK, response)
+            handleRequestWithBasic("/get_group_routes/789", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
                 //assertEquals("100.0,120.0", response.content)
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
@@ -129,12 +123,9 @@ class ApplicationTest {
     @Test
     fun testGetGroupMembersLocation() {
         withApplication(testEnv) {
-            var response = ""
-            runBlocking {
-                response = loginClient.get(url + "get_group_members/456")
-            }.apply {
-                //assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("[2,4]", response)
+            handleRequestWithBasic("/get_group_members/456", user, pass).apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("[2,4]", response.content)
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
         }
@@ -186,14 +177,11 @@ class ApplicationTest {
     @Test
     fun testStartVote() {
         withApplication(testEnv) {
-            var response = ""
-            runBlocking {
-                response = loginClient.post(url + "startVote"){
-                    body = "456"
-                }
+            handleRequestWithBasic("/startVote", user, pass, HttpMethod.Post) {
+                setBody("456")
             }.apply {
-                //assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("-2", response)
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("Vote started", response.content)
             }
         }
     }
@@ -201,14 +189,11 @@ class ApplicationTest {
     @Test
     fun testCastVote() {
         withApplication(testEnv) {
-            var response = ""
-            runBlocking {
-                response = loginClient.post(url + "castVote"){
-                    body = "456,taco bell"
-                }
+            handleRequestWithBasic("/castVote", user, pass, HttpMethod.Post) {
+                setBody("456,taco bell")
             }.apply {
-                //assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("-1", response)
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("Vote has been cast", response.content)
             }
         }
     }
@@ -216,14 +201,11 @@ class ApplicationTest {
     @Test
     fun testAddVotingLocation() {
         withApplication(testEnv) {
-            var response = ""
-            runBlocking {
-                response = loginClient.post(url + "addVotingLocation"){
-                    body = "456,taco bell"
-                }
+            handleRequestWithBasic("/addVotingLocation", user, pass, HttpMethod.Post) {
+                setBody("456,taco bell")
             }.apply {
-                //assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("-1", response)
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("Voting location added", response.content)
             }
         }
     }
@@ -231,13 +213,10 @@ class ApplicationTest {
     @Test
     fun testVotingOptions() {
         withApplication(testEnv) {
-            var response = ""
-            runBlocking {
-                response = loginClient.post(url + "votingOptions"){
-                    body = "456"
-                }
+            handleRequestWithBasic("/votingOptions", user, pass, HttpMethod.Post) {
+                setBody("456")
             }.apply {
-                assertEquals("-1", response)
+                assertEquals(HttpStatusCode.OK, response.status())
             }
         }
     }
@@ -245,13 +224,10 @@ class ApplicationTest {
     @Test
     fun testVotingScores() {
         withApplication(testEnv) {
-            var response = ""
-            runBlocking {
-                response = loginClient.post(url + "votingScores"){
-                    body = "456"
-                }
+            handleRequestWithBasic("/votingScores", user, pass, HttpMethod.Post) {
+                setBody("456")
             }.apply {
-                assertEquals("-1", response)
+                assertEquals(HttpStatusCode.OK, response.status())
             }
         }
     }
@@ -259,14 +235,11 @@ class ApplicationTest {
     @Test
     fun testVoteResult() {
         withApplication(testEnv) {
-            var response = ""
-            runBlocking {
-                response = loginClient.post(url + "voteResult"){
-                    body = "456"
-                }
+            handleRequestWithBasic("/voteResult", user, pass, HttpMethod.Post) {
+                setBody("456")
             }.apply {
-                //assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("-2", response)
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("Voting ended", response.content)
             }
         }
     }
