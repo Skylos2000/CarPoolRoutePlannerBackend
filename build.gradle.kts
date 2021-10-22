@@ -46,4 +46,5 @@ dependencies {
 
     implementation("io.ktor:ktor-auth:$ktor_version")
     implementation("io.ktor:ktor-auth-jwt:$ktor_version")
+    implementation("io.ktor:ktor-client-auth:$ktor_version")
 }

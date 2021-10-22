@@ -105,7 +105,8 @@ fun Application.configureSecurity(db: Database) {
                     .withClaim("username", user.username)
                     //.withExpiresAt(Date(System.currentTimeMillis() + 60000))
                     .sign(Algorithm.HMAC256(secret))
-                call.respond(hashMapOf("token" to token))
+                call.respond(token)
+                //call.respond(hashMapOf("token" to token))
             }
         }
     }
