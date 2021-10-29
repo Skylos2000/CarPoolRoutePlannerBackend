@@ -55,7 +55,7 @@ private fun TestApplicationEngine.handleRequestWithJWT(url: String, user: String
 @InternalAPI
 class ApplicationTest {
 
-    val url = "http://138.47.130.238:8080/"
+    val url = "http://192.168.1.133:8080/"
 
     val user = "dev1"
     val pass = "1"
@@ -93,15 +93,19 @@ class ApplicationTest {
             }.apply {
                 assertEquals(expectedToken, token)
             }
+            print("fref")
         }
     }
 
     @Test
     fun testUserLogIn() {
         withApplication(testEnv) {
-            handleRequestWithBasic("/users/me", user, pass).apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("{\"userId\":1,\"email\":\"qwe.gmail.com\",\"username\":\"dev1\",\"groupIds\":[123]}", response.content)
+            var response = ""
+            runBlocking {
+                    response = loginClient.get<String>(url + "users/me")
+            }.apply {
+                //assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("{\"userId\":1,\"email\":\"qwe.gmail.com\",\"username\":\"dev1\",\"groupIds\":[123]}", response)
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
         }
@@ -112,8 +116,11 @@ class ApplicationTest {
     @Test
     fun testGetGroupRoutes() {
         withApplication(testEnv) {
-            handleRequestWithBasic("/get_group_routes/789", user, pass).apply {
-                assertEquals(HttpStatusCode.OK, response.status())
+            var response = ""
+            runBlocking {
+                response = loginClient.get(url + "get_group_routes/789")
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response)
                 //assertEquals("100.0,120.0", response.content)
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
@@ -123,9 +130,12 @@ class ApplicationTest {
     @Test
     fun testGetGroupMembersLocation() {
         withApplication(testEnv) {
-            handleRequestWithBasic("/get_group_members/456", user, pass).apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("[2,4]", response.content)
+            var response = ""
+            runBlocking {
+                response = loginClient.get(url + "get_group_members/456")
+            }.apply {
+                //assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("[2,4]", response)
             }
             //call.respondText(call.getLoggedInUser()?.username ?: "no one")
         }
@@ -177,11 +187,14 @@ class ApplicationTest {
     @Test
     fun testStartVote() {
         withApplication(testEnv) {
-            handleRequestWithBasic("/startVote", user, pass, HttpMethod.Post) {
-                setBody("456")
+            var response = ""
+            runBlocking {
+                response = loginClient.post(url + "startVote"){
+                    body = "456"
+                }
             }.apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("Vote started", response.content)
+                //assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("-2", response)
             }
         }
     }
@@ -189,11 +202,14 @@ class ApplicationTest {
     @Test
     fun testCastVote() {
         withApplication(testEnv) {
-            handleRequestWithBasic("/castVote", user, pass, HttpMethod.Post) {
-                setBody("456,taco bell")
+            var response = ""
+            runBlocking {
+                response = loginClient.post(url + "castVote"){
+                    body = "456,taco bell"
+                }
             }.apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("Vote has been cast", response.content)
+                //assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("-1", response)
             }
         }
     }
@@ -201,11 +217,14 @@ class ApplicationTest {
     @Test
     fun testAddVotingLocation() {
         withApplication(testEnv) {
-            handleRequestWithBasic("/addVotingLocation", user, pass, HttpMethod.Post) {
-                setBody("456,taco bell")
+            var response = ""
+            runBlocking {
+                response = loginClient.post(url + "addVotingLocation"){
+                    body = "456,taco bell"
+                }
             }.apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("Voting location added", response.content)
+                //assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("-1", response)
             }
         }
     }
@@ -213,10 +232,13 @@ class ApplicationTest {
     @Test
     fun testVotingOptions() {
         withApplication(testEnv) {
-            handleRequestWithBasic("/votingOptions", user, pass, HttpMethod.Post) {
-                setBody("456")
+            var response = ""
+            runBlocking {
+                response = loginClient.post(url + "votingOptions"){
+                    body = "456"
+                }
             }.apply {
-                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("-1", response)
             }
         }
     }
@@ -224,10 +246,13 @@ class ApplicationTest {
     @Test
     fun testVotingScores() {
         withApplication(testEnv) {
-            handleRequestWithBasic("/votingScores", user, pass, HttpMethod.Post) {
-                setBody("456")
+            var response = ""
+            runBlocking {
+                response = loginClient.post(url + "votingScores"){
+                    body = "456"
+                }
             }.apply {
-                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("-1", response)
             }
         }
     }
@@ -235,11 +260,14 @@ class ApplicationTest {
     @Test
     fun testVoteResult() {
         withApplication(testEnv) {
-            handleRequestWithBasic("/voteResult", user, pass, HttpMethod.Post) {
-                setBody("456")
+            var response = ""
+            runBlocking {
+                response = loginClient.post(url + "voteResult"){
+                    body = "456"
+                }
             }.apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("Voting ended", response.content)
+                //assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals("-2", response)
             }
         }
     }
