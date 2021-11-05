@@ -33,6 +33,17 @@ fun Application.initUserRoutes(db: Database) {
                 call.respond(User(me.id, me.email, me.username, groupIds))
             }
 
+            // Get user groups
+            get("/users/me/groups") {
+                val groupIds = transaction(db) {
+                    Group_Membership
+                        .select { Group_Membership.Uid eq me.id }
+                        .map { it[Group_Membership.Gid] }
+                }
+
+                call.respond(groupIds.toString())
+            }
+
             // Change email
             post("/users/me/change_email") {
                 val newEmail = call.receive<String>()
