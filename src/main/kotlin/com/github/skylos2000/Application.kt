@@ -36,10 +36,5 @@ fun Application.module(testing: Boolean = false) {
     initVotingRoutes(db)
     initUserRoutes(db)
     initGroupInviteRoutes(db)
-
-    routing {
-        get("/"){
-            call.respondText { "Hello World" }
-        }
-    }
+    initOSRMRoutes(db)
 }

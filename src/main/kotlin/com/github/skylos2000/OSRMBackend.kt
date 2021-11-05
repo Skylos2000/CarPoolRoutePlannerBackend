@@ -68,3 +68,5 @@ suspend fun Application.getTripService(vararg points: Pair<Double, Double>): Str
     // Return the durations
     return waypointNamesInOrder
 }
+
+// val tripOptions = "?roundtrip=false&source=first&destination=last"
