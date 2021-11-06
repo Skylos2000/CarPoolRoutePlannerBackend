@@ -1,7 +1,10 @@
 package com.github.skylos2000.routes
 
 import com.github.skylos2000.GroupDestination
-import com.github.skylos2000.db.*
+import com.github.skylos2000.db.Group
+import com.github.skylos2000.db.Group1
+import com.github.skylos2000.db.Group_Destinations
+import com.github.skylos2000.db.Group_Membership
 import com.github.skylos2000.plugins.me
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -69,7 +72,7 @@ fun Application.initGroupRoutes(db: Database) {
             @Location("/groups/{groupId}/add_destinations")
             data class AddGroupDestinationsLocation(val groupId: Int)
             locationsPost<AddGroupDestinationsLocation> { pathParams ->
-                val destinations = call.receive<List<RowDestination>>()
+                val destinations = call.receive<List<GroupDestination>>()
 
                 // TODO: This is a duplicate of the delete group route so this should probably be put in some kind of function
                 val groupDoesNotExist = transaction(db) {
@@ -96,8 +99,9 @@ fun Application.initGroupRoutes(db: Database) {
                         destinations.forEach { destination ->
                             Group_Destinations.insert { row ->
                                 row[Group_id] = pathParams.groupId
-                                row[Destination_Lat] = destination.latitude
-                                row[Destination_Long] = destination.longitude
+                                row[Destination_Lat] = destination.lat
+                                row[Destination_Long] = destination.long
+                                row[Label] = destination.label
                             }
                         }
                     }
