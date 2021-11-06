@@ -95,10 +95,11 @@ ENGINE = InnoDB;
 -- Table `mydb`.`Group_Destinations`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Group_Destinations` (
+  `Destination_id` INT NOT NULL UNIQUE AUTO_INCREMENT,
   `Group_id` INT NOT NULL,
   `Destination_lat` DOUBLE NULL,
   `Destination_long` DOUBLE NULL,
-  `isPriority` BOOLEAN,
+  `orderNum` INT NULL,
   `label` VARCHAR(90) NULL,
   CONSTRAINT `Group_id`
     FOREIGN KEY (`Group_id`)

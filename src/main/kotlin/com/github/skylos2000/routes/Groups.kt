@@ -102,6 +102,8 @@ fun Application.initGroupRoutes(db: Database) {
                                 row[Destination_Lat] = destination.lat
                                 row[Destination_Long] = destination.long
                                 row[Label] = destination.label
+                                row[Destination_id] = destination.destinationId
+                                row[OrderNum] = destination.orderNum
                             }
                         }
                     }
@@ -169,10 +171,12 @@ fun Application.initGroupRoutes(db: Database) {
                     Group_Destinations
                         .select { Group_Destinations.Group_id eq location.id }
                         .map { GroupDestination(
+                            it[Group_Destinations.Destination_id],
                             it[Group_Destinations.Group_id],
                             it[Group_Destinations.Destination_Lat],
                             it[Group_Destinations.Destination_Long],
                             it[Group_Destinations.Label],
+                            it[Group_Destinations.OrderNum]
                         ) }
                 }
 

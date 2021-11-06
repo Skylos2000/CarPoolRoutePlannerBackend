@@ -5,9 +5,11 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.github.skylos2000.db.RowUser
 import com.github.skylos2000.db.User1
 import com.github.skylos2000.db.getUserFromResultRow
+import com.github.skylos2000.httpClient
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
+import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -73,19 +75,21 @@ fun Application.configureSecurity(db: Database) {
             }
         }
 
-//        oauth("auth-oath-facebook") {
-//            providerLookup = {
-//                OAuthServerSettings.OAuth2ServerSettings(
-//                    name = "facebook",
-//                    authorizeUrl = "https://accounts.google.com/o/oauth2/auth",
-//                    accessTokenUrl = "https://accounts.google.com/o/oauth2/token",
-//                    requestMethod = HttpMethod.Post,
-//                    clientId = System.getenv("GOOGLE_CLIENT_ID"),
-//                    clientSecret = System.getenv("GOOGLE_CLIENT_SECRET"),
-//                    defaultScopes = listOf("https://www.googleapis.com/auth/userinfo.profile")
-//                )
-//            }
-//        }
+        oauth("auth-oauth-google") {
+            urlProvider = { "http://localhost:8080/callback" }
+            providerLookup = {
+                OAuthServerSettings.OAuth2ServerSettings(
+                    name = "google",
+                    authorizeUrl = "https://accounts.google.com/o/oauth2/auth",
+                    accessTokenUrl = "https://accounts.google.com/o/oauth2/token",
+                    requestMethod = HttpMethod.Post,
+                    clientId = System.getenv("GOOGLE_CLIENT_ID"),
+                    clientSecret = System.getenv("GOOGLE_CLIENT_SECRET"),
+                    defaultScopes = listOf("https://www.googleapis.com/auth/userinfo.profile")
+                )
+            }
+            client = httpClient
+        }
     }
 
     routing {
@@ -119,6 +123,12 @@ fun Application.configureSecurity(db: Database) {
                     .sign(Algorithm.HMAC256(secret))
                 call.respond(token)
                 //call.respond(hashMapOf("token" to token))
+            }
+        }
+
+        authenticate("auth-oauth-google") {
+            get("/login_oauth") {
+
             }
         }
     }
