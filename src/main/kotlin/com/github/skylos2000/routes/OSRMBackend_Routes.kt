@@ -2,10 +2,12 @@ package com.github.skylos2000.routes
 
 import com.github.skylos2000.GetGroupMembersLocation
 import com.github.skylos2000.GetUserPickups
+import com.github.skylos2000.coordinateList
 import com.github.skylos2000.db.Group1
 import com.github.skylos2000.db.Group_Destinations
 import com.github.skylos2000.db.Group_Membership
 import com.github.skylos2000.db.User1
+import com.github.skylos2000.getTripService
 import com.github.skylos2000.plugins.getLoggedInUser
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -34,23 +36,20 @@ fun Application.initOSRMRoutes(db: Database) {
                 // call osrm trip service using parsed string
                 // parse returned object and send back in call respond
 
-                val dest_points = transaction(db) {
+                var dest_points = transaction(db) {
                     val groupDestinations = Group_Destinations.select { Group_Destinations.Group_id eq it.groupId }
                         .map { Pair(it[Group_Destinations.Destination_Lat], it[Group_Destinations.Destination_Long]) }
 
                     groupDestinations
                 }
 
-
-
+                val optimized_points = getTripService(dest_points)
 
 
 
                 call.respond(transaction(db) {
 
-                    // formatted OSRM response goes here <---------
-                    val response = "WIP"
-                    response
+                    optimized_points
 
                 })
             }
