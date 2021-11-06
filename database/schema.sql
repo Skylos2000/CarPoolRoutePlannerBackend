@@ -171,12 +171,12 @@ insert into Routes(Rid, Destination_lat, Destination_long, Order1) values
 (3, 50.00, 50.00, 1);
 
 
-insert into Group1(Group_ID, isTemp, isVoting, group_leader, Route_id) values
-(123, false, false, 001, 1),
-(456, false, false, 002, 1),
-(789, false, false, 003, 2),
-(111, false, false, 004, 2),
-(222, false, false, 005, 3);
+insert into Group1(Group_ID, isTemp, isVoting, group_leader, Route_id, label) values
+(123, false, false, 001, 1, 'Group 123'),
+(456, false, false, 002, 1, 'Group 456'),
+(789, false, false, 003, 2, 'Group 789'),
+(111, false, false, 004, 2, 'Group 111'),
+(222, false, false, 005, 3, 'Group 222');
 
 insert into Group_Membership(Gid, Uid, User_lat, User_long) values
 (123, 001, 100.00, 120.00),

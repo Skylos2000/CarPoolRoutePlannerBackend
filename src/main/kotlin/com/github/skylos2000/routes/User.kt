@@ -1,5 +1,8 @@
 package com.github.skylos2000.routes
 
+import com.github.skylos2000.SerializedGroup
+import com.github.skylos2000.SerializedUser
+import com.github.skylos2000.db.Group1
 import com.github.skylos2000.db.Group_Membership
 import com.github.skylos2000.db.User1
 import com.github.skylos2000.plugins.me
@@ -9,13 +12,8 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-
-// TODO: Move this to dedicated file
-@Serializable
-data class User(val userId: Int, val email: String, val username: String, val groupIds: List<Int>)
 
 data class NewUser(val username: String, val password: String, val email: String)
 
@@ -24,13 +22,16 @@ fun Application.initUserRoutes(db: Database) {
         authenticate("auth-jwt") {
             // Get user info
             get("/users/me") {
-                val groupIds = transaction(db) {
-                    Group_Membership
+                val groups = transaction(db) {
+                    val gids = Group_Membership
                         .select { Group_Membership.Uid eq me.id }
                         .map { it[Group_Membership.Gid] }
+
+                    Group1.select { Group1.Group_ID inList gids }
+                        .map { SerializedGroup(it[Group1.Group_ID], it[Group1.label], it[Group1.group_leader]) }
                 }
 
-                call.respond(User(me.id, me.email, me.username, groupIds))
+                call.respond(SerializedUser(me.id, me.email, me.username, groups))
             }
 
             // Get user groups

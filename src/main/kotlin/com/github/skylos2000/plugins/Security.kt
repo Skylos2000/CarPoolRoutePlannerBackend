@@ -2,21 +2,19 @@ package com.github.skylos2000.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.github.skylos2000.db.*
+import com.github.skylos2000.db.RowUser
+import com.github.skylos2000.db.User1
+import com.github.skylos2000.db.getUserFromResultRow
 import io.ktor.application.*
 import io.ktor.auth.*
-import io.ktor.util.pipeline.*
 import io.ktor.auth.jwt.*
-import io.ktor.features.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import io.ktor.serialization.*
+import io.ktor.util.pipeline.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.lang.UnsupportedOperationException
-import java.util.*
 
 data class UserPrincipal(val user: RowUser) : Principal
 
@@ -74,6 +72,20 @@ fun Application.configureSecurity(db: Database) {
                 }
             }
         }
+
+//        oauth("auth-oath-facebook") {
+//            providerLookup = {
+//                OAuthServerSettings.OAuth2ServerSettings(
+//                    name = "facebook",
+//                    authorizeUrl = "https://accounts.google.com/o/oauth2/auth",
+//                    accessTokenUrl = "https://accounts.google.com/o/oauth2/token",
+//                    requestMethod = HttpMethod.Post,
+//                    clientId = System.getenv("GOOGLE_CLIENT_ID"),
+//                    clientSecret = System.getenv("GOOGLE_CLIENT_SECRET"),
+//                    defaultScopes = listOf("https://www.googleapis.com/auth/userinfo.profile")
+//                )
+//            }
+//        }
     }
 
     routing {
