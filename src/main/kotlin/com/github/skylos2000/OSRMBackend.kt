@@ -47,13 +47,13 @@ data class OSRMTripResponse(val code: String, val waypoints: List<Waypoint>) {
 }
 
 // Take any number of pairs of doubles and return them in the format OSRM wants them in.
-fun coordinateList(vararg points: Pair<Double, Double>) = points.joinToString(";") { "${it.second},${it.first}" }
+fun coordinateList(points: Iterable<Pair<Double, Double>>) = points.joinToString(";") { "${it.second},${it.first}" }
 
-suspend fun Application.getTripService(vararg points: Pair<Double, Double>): String {
+suspend fun Application.getTripService(points: Iterable<Pair<Double, Double>>): String {
     // Create the URL to request the distance matrix from the OSRM backend
     // Documentation here: http://project-osrm.org/docs/v5.5.1/api/?language=cURL#table-service
     val backendHost = environment.config.property("osrm.routed_host").getString()
-    val tableServicePath = "/trip/v1/car/${coordinateList(*points)}"
+    val tableServicePath = "/trip/v1/car/${coordinateList(points)}"
 
     // Combine the pieces together
     val urlString = backendHost + tableServicePath
