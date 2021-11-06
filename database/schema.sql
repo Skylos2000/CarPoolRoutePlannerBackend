@@ -191,7 +191,11 @@ insert into Group_Membership(Gid, Uid, User_lat, User_long) values
 (222, 010, 101.00, 121.00);
 
 insert into Group_Destinations(Group_id, Destination_lat, Destination_long, label) values
-(123, 50.00, 50.00, 'delete me');
+(123, 32.54386464788708, -92.65289852371741, 'Dairy Queen'),
+(123, 32.54107667280471, -92.6294690516874, 'Canes'),
+(123, 32.54105472946106, -92.63309141687111, 'Chick-Fil-A'),
+(123, 32.542931056568044, -92.62541758069071, 'Walmart'),
+(123, 32.54082962662338, -92.60580263124608, 'Tractor Supply');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

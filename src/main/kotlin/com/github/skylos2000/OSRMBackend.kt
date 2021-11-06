@@ -6,6 +6,8 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import kotlinx.serialization.Serializable
+import kotlin.math.pow
+import kotlin.math.sqrt
 import kotlinx.serialization.json.Json as JsonSerializer
 
 val httpClient = HttpClient {
@@ -19,7 +21,10 @@ val httpClient = HttpClient {
 }
 
 // Temporary Locations for testing purposes
-val locations = mapOf<String, Pair<Double, Double>>("Dairy Queen" to Pair(32.54386464788708, -92.65289852371741), "Canes" to Pair(32.54107667280471, -92.6294690516874), "Chick-Fil-A" to Pair(32.54105472946106, -92.63309141687111),
+val locations = mapOf<String, Pair<Double, Double>>(
+    "Dairy Queen" to Pair(32.54386464788708, -92.65289852371741),
+    "Canes" to Pair(32.54107667280471, -92.6294690516874),
+    "Chick-Fil-A" to Pair(32.54105472946106, -92.63309141687111),
     "Walmart" to Pair(32.542931056568044, -92.62541758069071),
     "Tractor Supply" to Pair(32.54082962662338, -92.60580263124608),
     "Starbucks" to Pair(32.538904834904436, -92.6528500849125)
@@ -33,13 +38,18 @@ data class OSRMTripResponse(val code: String, val waypoints: List<Waypoint>) {
         val trips_index: Int,
         val location: List<Double>,
         val distance: Double
-    )
+    ) {
+        fun getLabel(labels: List<Pair<String, Pair<Double, Double>>>) = labels.minByOrNull {
+            val coord = it.second
+            sqrt((location[0] - coord.second).pow(2) + (location[1] - coord.first).pow(2))
+        }
+    }
 }
 
 // Take any number of pairs of doubles and return them in the format OSRM wants them in.
 fun coordinateList(points: Iterable<Pair<Double, Double>>) = points.joinToString(";") { "${it.second},${it.first}" }
 
-suspend fun Application.getTripService(points: Iterable<Pair<Double, Double>>): List<Pair<Double, Double>> {
+suspend fun Application.getTripService(points: Iterable<Pair<Double, Double>>): List<OSRMTripResponse.Waypoint> {
     // Create the URL to request the distance matrix from the OSRM backend
     // Documentation here: http://project-osrm.org/docs/v5.5.1/api/?language=cURL#table-service
     val backendHost = environment.config.property("osrm.routed_host").getString()
@@ -53,5 +63,6 @@ suspend fun Application.getTripService(points: Iterable<Pair<Double, Double>>): 
     val tableResponse = httpClient.get<OSRMTripResponse>(urlString)
 
     // Pair is intentionally reversed to deal with OSRM's format
-    return tableResponse.waypoints.sortedBy { it.waypoint_index }.map { Pair(it.location[1], it.location[0]) }
+//    return tableResponse.waypoints.sortedBy { it.waypoint_index }.map { Pair(it.location[1], it.location[0]) }
+    return tableResponse.waypoints.sortedBy { it.waypoint_index }
 }

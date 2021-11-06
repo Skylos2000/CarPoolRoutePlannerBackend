@@ -1,5 +1,6 @@
 package com.github.skylos2000.routes
 
+import com.github.skylos2000.GroupDestination
 import com.github.skylos2000.db.*
 import com.github.skylos2000.plugins.me
 import io.ktor.application.*
@@ -154,6 +155,31 @@ fun Application.initGroupRoutes(db: Database) {
                 } else {
                     call.respond(responseCode)
                 }
+            }
+
+            @KtorExperimentalLocationsAPI
+            @Location("/groups/{id}/destinations")
+            data class GroupDestinationsLocation(val id: Int)
+            get<GroupDestinationsLocation> { location ->
+                val destinations = transaction(db) {
+                    Group_Destinations
+                        .select { Group_Destinations.Group_id eq location.id }
+                        .map { GroupDestination(
+                            it[Group_Destinations.Group_id],
+                            it[Group_Destinations.Destination_Lat],
+                            it[Group_Destinations.Destination_Long],
+                            it[Group_Destinations.Label],
+                        ) }
+                }
+
+                call.respond(destinations)
+            }
+
+            @KtorExperimentalLocationsAPI
+            @Location("/groups/{id}/get_optimized_route")
+            data class GetOptimizedRouteLocation(val id: Int)
+            get<GetOptimizedRouteLocation> {
+
             }
         }
     }

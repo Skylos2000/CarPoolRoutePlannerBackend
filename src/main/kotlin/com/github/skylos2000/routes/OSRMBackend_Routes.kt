@@ -1,31 +1,20 @@
 package com.github.skylos2000.routes
 
-import com.github.skylos2000.GetGroupMembersLocation
-import com.github.skylos2000.GetUserPickups
-import com.github.skylos2000.coordinateList
-import com.github.skylos2000.db.Group1
 import com.github.skylos2000.db.Group_Destinations
-import com.github.skylos2000.db.Group_Membership
-import com.github.skylos2000.db.User1
 import com.github.skylos2000.getTripService
-import com.github.skylos2000.plugins.getLoggedInUser
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.locations.*
-import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 
 @KtorExperimentalLocationsAPI
 @Location("/optimize_route/{groupId}")
 data class OptimizeRoute(val groupId: Int)
-
 
 fun Application.initOSRMRoutes(db: Database) {
     routing {
@@ -43,15 +32,15 @@ fun Application.initOSRMRoutes(db: Database) {
                     groupDestinations
                 }
 
-                val optimized_points = getTripService(dest_points)
+                val labels = transaction(db) {
+                    Group_Destinations.select { Group_Destinations.Group_id eq it.groupId }
+                        .map { Pair(it[Group_Destinations.Label], Pair(it[Group_Destinations.Destination_Lat], it[Group_Destinations.Destination_Long]))  }
+                }
+
+                val optimized_points = getTripService(dest_points).map { Pair(it.getLabel(labels), Pair(it.location[1], it.location[0])) }
 
 
-
-                call.respond(transaction(db) {
-
-                    optimized_points
-
-                })
+                call.respond(optimized_points)
             }
         }
     }
