@@ -184,10 +184,18 @@ fun Application.initGroupRoutes(db: Database) {
             }
 
             @KtorExperimentalLocationsAPI
-            @Location("/groups/{id}/get_optimized_route")
-            data class GetOptimizedRouteLocation(val id: Int)
-            get<GetOptimizedRouteLocation> {
-
+            @Location("/groups/{id}/reorder_destinations")
+            data class ReorderRoutesLocation(val id: Int)
+            get<ReorderRoutesLocation> {
+                val newOrder = call.receive<List<Pair<Int, Int>>>()
+                transaction(db) {
+                    for ((destinationId, newOrderNum) in newOrder) {
+                        Group_Destinations
+                            .update({ (Group_Destinations.Group_id eq it.id) and (Group_Destinations.Destination_id eq destinationId) }) {
+                                it[OrderNum] = newOrderNum
+                            }
+                    }
+                }
             }
         }
     }
