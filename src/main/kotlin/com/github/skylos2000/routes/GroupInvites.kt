@@ -31,7 +31,7 @@ fun Application.initGroupInviteRoutes(db: Database) {
                 // If an invite already exists for the given group that same invite is used
                 post("/get_invite") {
                     // Retrieve group id from body of request
-                    val groupId = call.receive<Int>()
+                    val groupId = call.receive<String>().toInt()
 
                     // Check if this user has permission to create this group
                     // TODO: Should only the group leader be able to create invites? Maybe make this a setting?

@@ -57,7 +57,7 @@ object  Group_Destinations : Table() {
 object GroupInvites: Table() {
     val id : Column<Int> = integer("id").autoIncrement()
     val Gid = reference("Gid", Group1.Group_ID).uniqueIndex()
-    val InviteId : Column<String> = varchar("Invite_Id",15)
+    val InviteId : Column<String> = varchar("InviteId",15)
 
     override val primaryKey = PrimaryKey(
        id
