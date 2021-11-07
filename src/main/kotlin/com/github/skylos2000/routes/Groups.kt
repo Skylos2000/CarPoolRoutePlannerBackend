@@ -1,10 +1,7 @@
 package com.github.skylos2000.routes
 
 import com.github.skylos2000.GroupDestination
-import com.github.skylos2000.db.Group
-import com.github.skylos2000.db.Group1
-import com.github.skylos2000.db.Group_Destinations
-import com.github.skylos2000.db.Group_Membership
+import com.github.skylos2000.db.*
 import com.github.skylos2000.plugins.me
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -168,12 +165,7 @@ fun Application.initGroupRoutes(db: Database) {
             data class GroupDestinationsLocation(val id: Int)
             get<GroupDestinationsLocation> { location ->
                 val destinations = transaction(db) {
-                    Group_Destinations
-                        .select { Group_Destinations.Group_id eq location.id }
-                        .map { GroupDestination(
-                            it[Group_Destinations.Destination_id],
-                            it[Group_Destinations.Group_id],
-                            it[Group_Destinations.Destination_Lat],
+                    Group_Destinations.select { Group_Destinations.Group_id eq location.id }.map { GroupDestination(it[Group_Destinations.Destination_id], it[Group_Destinations.Group_id], it[Group_Destinations.Destination_Lat],
                             it[Group_Destinations.Destination_Long],
                             it[Group_Destinations.Label],
                             it[Group_Destinations.OrderNum]
@@ -184,9 +176,22 @@ fun Application.initGroupRoutes(db: Database) {
             }
 
             @KtorExperimentalLocationsAPI
+            @Location("/groups/{id}/members")
+            data class GroupMembersLocation(val id: Int)
+            get<GroupMembersLocation> { location ->
+                val members = transaction(db) {
+                    (Group_Membership innerJoin User1).select { Group_Membership.Gid eq location.id }
+                        .map { Pair(it[User1.Username], it[User1.Uid]) }
+                }
+
+                call.respond(members)
+            }
+
+            @KtorExperimentalLocationsAPI
             @Location("/groups/{id}/reorder_destinations")
             data class ReorderRoutesLocation(val id: Int)
             get<ReorderRoutesLocation> {
+                // First number in the pair is the destination id and the second number is the new order num
                 val newOrder = call.receive<List<Pair<Int, Int>>>()
                 transaction(db) {
                     for ((destinationId, newOrderNum) in newOrder) {

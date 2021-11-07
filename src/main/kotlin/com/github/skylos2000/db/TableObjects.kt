@@ -48,7 +48,7 @@ object  Group_Destinations : Table() {
     val Destination_Lat: Column<Double> = double("Destination_Lat")
     val Destination_Long: Column<Double> = double("Destination_Long")
     val Label: Column<String> = varchar("Label", 45)
-    val OrderNum: Column<Int?> = integer("orderNum").nullable()
+    val OrderNum: Column<Int> = integer("orderNum")
     val Destination_id = integer("Destination_id").uniqueIndex().autoIncrement()
 
     override val primaryKey = PrimaryKey(Group_id, Destination_Lat, Destination_Long)

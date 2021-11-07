@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Group_Destinations` (
   `Group_id` INT NOT NULL,
   `Destination_lat` DOUBLE NULL,
   `Destination_long` DOUBLE NULL,
-  `orderNum` INT NULL,
+  `orderNum` INT NOT NULL,
   `label` VARCHAR(90) NULL,
   CONSTRAINT `Group_id`
     FOREIGN KEY (`Group_id`)
@@ -191,12 +191,12 @@ insert into Group_Membership(Gid, Uid, User_lat, User_long) values
 (222, 009, 100.00, 120.00),
 (222, 010, 101.00, 121.00);
 
-insert into Group_Destinations(Group_id, Destination_lat, Destination_long, label) values
-(123, 32.54386464788708, -92.65289852371741, 'Dairy Queen'),
-(123, 32.54107667280471, -92.6294690516874, 'Canes'),
-(123, 32.54105472946106, -92.63309141687111, 'Chick-Fil-A'),
-(123, 32.542931056568044, -92.62541758069071, 'Walmart'),
-(123, 32.54082962662338, -92.60580263124608, 'Tractor Supply');
+insert into Group_Destinations(Group_id, Destination_lat, Destination_long, label, orderNum) values
+(123, 32.54386464788708, -92.65289852371741, 'Dairy Queen', 1),
+(123, 32.54107667280471, -92.6294690516874, 'Canes', 2),
+(123, 32.54105472946106, -92.63309141687111, 'Chick-Fil-A', 3),
+(123, 32.542931056568044, -92.62541758069071, 'Walmart', 4),
+(123, 32.54082962662338, -92.60580263124608, 'Tractor Supply', 5);
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

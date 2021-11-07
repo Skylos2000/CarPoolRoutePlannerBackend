@@ -14,4 +14,4 @@ data class SerializedUser(val userId: Int, val email: String, val username: Stri
 data class SerializedGroup(val gid: Int, val label: String, val groupLeaderUid: Int)
 
 @Serializable
-data class GroupDestination(val destinationId: Int, val gid: Int, val lat: Double, val long: Double, val label: String, val orderNum: Int? = null)
+data class GroupDestination(val destinationId: Int, val gid: Int, val lat: Double, val long: Double, val label: String, val orderNum: Int)
