@@ -109,17 +109,17 @@ fun Application.initGroupRoutes(db: Database) {
             }
 
             // Remove destination
-            // TODO: Refactor
-            post("/remove_location"){
-                val (group_id, lat, long) = call.receiveText().split(",")
-
-                transaction(db){
+            @KtorExperimentalLocationsAPI
+            @Location("/groups/{groupId}/destinations/{destinationId}/delete")
+            data class DeleteDestinationLocation(val groupId: Int, val destinationId: Int)
+            locationsPost<DeleteDestinationLocation> {
+                transaction(db) {
                     Group_Destinations.deleteWhere {
-                        (Group_Destinations.Group_id eq group_id.toInt()) and
-                                (Group_Destinations.Destination_Lat eq lat.toDouble()) and
-                                (Group_Destinations.Destination_Long eq long.toDouble())
+                        (Group_Destinations.Destination_id eq it.destinationId) and (Group_Destinations.Group_id eq it.groupId)
                     }
                 }
+
+                call.respond(HttpStatusCode.OK)
             }
 
             // Leave group
