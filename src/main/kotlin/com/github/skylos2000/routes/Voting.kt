@@ -43,17 +43,27 @@ fun Application.initVotingRoutes(db: Database) {
                 }
 
                 //println(aaa[0])
-
                 if (voteStartCheck[0]) {
-                    transaction(db) {
-                        Polls.insert {
-                            it[Group_id] = gid.toInt()
-                            it[Location] = dest
-                            it[Votes] = 0
-                        }
+
+                    val currLocations = transaction(db) {
+                        Polls.select { Polls.Group_id eq gid.toInt() }.map { it[Polls.Location].lowercase() }
                     }
 
-                    call.respondText("Voting location added")
+                    if (dest !in currLocations) {
+                        transaction(db) {
+                            Polls.insert {
+                                it[Group_id] = gid.toInt()
+                                it[Location] = dest
+                                it[Votes] = 0
+                            }
+                        }
+
+                        call.respondText("Voting location added")
+                    }
+                    else{
+                        call.respondText("-4")
+                        //call.respondText("This voting location has already been added")
+                    }
                 }
                 //else{ call.respondText("There is no active no voting for this group") }
                 else {
