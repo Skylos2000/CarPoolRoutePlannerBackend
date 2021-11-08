@@ -72,15 +72,15 @@ fun Application.initGroupRoutes(db: Database) {
                 val destinations = call.receive<List<GroupDestination>>()
 
                 // TODO: This is a duplicate of the delete group route so this should probably be put in some kind of function
-                val groupDoesNotExist = transaction(db) {
-                    Group1.select { Group1.Group_ID eq pathParams.groupId }
-                        .empty()
-                }
-
-                if (groupDoesNotExist) {
-                    call.respond(HttpStatusCode.NotFound, "Group does not exist")
-                    return@locationsPost
-                }
+//                val groupDoesNotExist = transaction(db) {
+//                    Group1.select { Group1.Group_ID eq pathParams.groupId }
+//                        .empty()
+//                }
+//
+//                if (groupDoesNotExist) {
+//                    call.respond(HttpStatusCode.NotFound, "Group does not exist")
+//                    return@locationsPost
+//                }
 
                 // Only the group leader has permission
                 val userHasPermission = transaction(db) {
@@ -105,6 +105,7 @@ fun Application.initGroupRoutes(db: Database) {
                         }
                     }
                 }
+                call.respond(HttpStatusCode.OK)
             }
 
             // Remove destination
