@@ -191,7 +191,7 @@ fun Application.initGroupRoutes(db: Database) {
             @KtorExperimentalLocationsAPI
             @Location("/groups/{id}/reorder_destinations")
             data class ReorderRoutesLocation(val id: Int)
-            get<ReorderRoutesLocation> {
+            locationsPost<ReorderRoutesLocation> {
                 // First number in the pair is the destination id and the second number is the new order num
                 val newOrder = call.receive<List<Pair<Int, Int>>>()
                 transaction(db) {
@@ -202,6 +202,7 @@ fun Application.initGroupRoutes(db: Database) {
                             }
                     }
                 }
+                call.respond(HttpStatusCode.OK)
             }
         }
     }
