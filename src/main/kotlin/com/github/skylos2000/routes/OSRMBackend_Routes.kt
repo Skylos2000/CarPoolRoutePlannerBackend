@@ -4,6 +4,7 @@ import com.github.skylos2000.GroupDestination
 import com.github.skylos2000.db.Group_Destinations
 import com.github.skylos2000.getTripService
 import io.ktor.application.*
+import io.ktor.auth.*
 import io.ktor.locations.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -16,7 +17,7 @@ import kotlin.math.sqrt
 @KtorExperimentalLocationsAPI
 fun Application.initOSRMRoutes(db: Database) {
     routing {
-//        authenticate("auth-jwt") {
+        authenticate("auth-jwt") {
             @KtorExperimentalLocationsAPI
             @Location("/optimize_route/{groupId}")
             data class OptimizeRoute(val groupId: Int)
@@ -58,4 +59,4 @@ fun Application.initOSRMRoutes(db: Database) {
             }
         }
     }
-//}
+}
