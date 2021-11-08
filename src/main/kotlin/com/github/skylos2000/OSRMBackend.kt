@@ -21,14 +21,14 @@ val httpClient = HttpClient {
 }
 
 // Temporary Locations for testing purposes
-val locations = mapOf<String, Pair<Double, Double>>(
-    "Dairy Queen" to Pair(32.54386464788708, -92.65289852371741),
-    "Canes" to Pair(32.54107667280471, -92.6294690516874),
-    "Chick-Fil-A" to Pair(32.54105472946106, -92.63309141687111),
-    "Walmart" to Pair(32.542931056568044, -92.62541758069071),
-    "Tractor Supply" to Pair(32.54082962662338, -92.60580263124608),
-    "Starbucks" to Pair(32.538904834904436, -92.6528500849125)
-)
+//val locations = mapOf<String, Pair<Double, Double>>(
+//    "Dairy Queen" to Pair(32.54386464788708, -92.65289852371741),
+//    "Canes" to Pair(32.54107667280471, -92.6294690516874),
+//    "Chick-Fil-A" to Pair(32.54105472946106, -92.63309141687111),
+//    "Walmart" to Pair(32.542931056568044, -92.62541758069071),
+//    "Tractor Supply" to Pair(32.54082962662338, -92.60580263124608),
+//    "Starbucks" to Pair(32.538904834904436, -92.6528500849125)
+//)
 
 @Serializable
 data class OSRMTripResponse(val code: String, val waypoints: List<Waypoint>) {
