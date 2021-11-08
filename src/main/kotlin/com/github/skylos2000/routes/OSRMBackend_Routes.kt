@@ -11,8 +11,7 @@ import io.ktor.routing.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import kotlin.math.pow
-import kotlin.math.sqrt
+import org.jetbrains.exposed.sql.update
 
 @KtorExperimentalLocationsAPI
 fun Application.initOSRMRoutes(db: Database) {
@@ -27,13 +26,6 @@ fun Application.initOSRMRoutes(db: Database) {
                 // call osrm trip service using parsed string
                 // parse returned object and send back in call respond
 
-                val destPoints = transaction(db) {
-                    val groupDestinations = Group_Destinations.select { Group_Destinations.Group_id eq it.groupId }
-                        .map { Pair(it[Group_Destinations.Destination_Lat], it[Group_Destinations.Destination_Long]) }
-
-                    groupDestinations
-                }
-
                 val destinations = transaction(db) {
                     Group_Destinations.select { Group_Destinations.Group_id eq it.groupId }
                         .map { GroupDestination(
@@ -46,12 +38,14 @@ fun Application.initOSRMRoutes(db: Database) {
                         ) }.sortedBy { it.orderNum }
                 }
 
-                val optimizedPoints = getTripService(destPoints).map { osrmWaypoint ->
-                    val osrmLat = osrmWaypoint.location[1]
-                    val osrmLong = osrmWaypoint.location[0]
+                val optimizedPoints = getTripService(destinations)
 
-                    destinations.minByOrNull { groupDestination ->
-                        sqrt((osrmLat - groupDestination.lat).pow(2) + (osrmLong - groupDestination.long).pow(2))
+                // Update orderNums in database
+                transaction {
+                    optimizedPoints.forEach { serialDestination ->
+                        Group_Destinations.update({ Group_Destinations.Destination_id eq serialDestination.destinationId }) { dbDestination ->
+                            dbDestination[OrderNum] = serialDestination.orderNum
+                        }
                     }
                 }
 

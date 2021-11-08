@@ -6,8 +6,6 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import kotlinx.serialization.Serializable
-import kotlin.math.pow
-import kotlin.math.sqrt
 import kotlinx.serialization.json.Json as JsonSerializer
 
 val httpClient = HttpClient {
@@ -38,18 +36,13 @@ data class OSRMTripResponse(val code: String, val waypoints: List<Waypoint>) {
         val trips_index: Int,
         val location: List<Double>,
         val distance: Double
-    ) {
-        fun getLabel(labels: List<Pair<String, Pair<Double, Double>>>) = labels.minByOrNull {
-            val coord = it.second
-            sqrt((location[0] - coord.second).pow(2) + (location[1] - coord.first).pow(2))
-        }
-    }
+    )
 }
 
 // Take any number of pairs of doubles and return them in the format OSRM wants them in.
-fun coordinateList(points: Iterable<Pair<Double, Double>>) = points.joinToString(";") { "${it.second},${it.first}" }
+fun coordinateList(points: List<GroupDestination>) = points.joinToString(";") { "${it.long},${it.lat}" }
 
-suspend fun Application.getTripService(points: Iterable<Pair<Double, Double>>): List<OSRMTripResponse.Waypoint> {
+suspend fun Application.getTripService(points: List<GroupDestination>): List<GroupDestination> {
     // Create the URL to request the distance matrix from the OSRM backend
     // Documentation here: http://project-osrm.org/docs/v5.5.1/api/?language=cURL#table-service
     val backendHost = environment.config.property("osrm.routed_host").getString()
@@ -64,5 +57,5 @@ suspend fun Application.getTripService(points: Iterable<Pair<Double, Double>>): 
 
     // Pair is intentionally reversed to deal with OSRM's format
 //    return tableResponse.waypoints.sortedBy { it.waypoint_index }.map { Pair(it.location[1], it.location[0]) }
-    return tableResponse.waypoints.sortedBy { it.waypoint_index }
+    return tableResponse.waypoints.mapIndexed { index, waypoint -> points[index].copy(orderNum = waypoint.waypoint_index) }
 }

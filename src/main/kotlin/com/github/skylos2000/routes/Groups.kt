@@ -29,6 +29,7 @@ fun Application.initGroupRoutes(db: Database) {
                         it[group_leader] = me.id
                     }
                 }
+                call.respond(HttpStatusCode.OK)
             }
 
             // Delete group
@@ -188,6 +189,17 @@ fun Application.initGroupRoutes(db: Database) {
                 call.respond(members)
             }
 
+            @KtorExperimentalLocationsAPI
+            @Location("/groups/{gid}/members/{uid}/delete")
+            data class DeleteGroupMemberLocation(val gid: Int, val uid: Int)
+            get<DeleteGroupMemberLocation> { location ->
+                transaction(db) {
+                    Group_Membership.deleteWhere {
+                        Group_Membership.Gid eq location.gid and (Group_Membership.Uid eq location.uid)
+                    }
+                }
+                call.respond(HttpStatusCode.OK)
+            }
             @KtorExperimentalLocationsAPI
             @Location("/groups/{id}/reorder_destinations")
             data class ReorderRoutesLocation(val id: Int)
